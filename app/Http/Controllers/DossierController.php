@@ -10,6 +10,7 @@ class DossierController extends Controller
     //Ajout du dossier
     public function store(Request $request){
         $request->validate([
+
             'residence_img'=>'required|image|mimes:jpg,png,jpeg,webp|max:5000',
             'Dmd_img'=>'required|image|mimes:jpg,png,jpeg,webp|max:5000',
             'autorisation_img'=>'required|file|mimes:pdf,docx|max:6000',
@@ -35,9 +36,6 @@ class DossierController extends Controller
             'Dmd_img'=>$Dmd_img,
             'residence_img'=>$residence_img,
         ]);
-
-
-
     }
 
 }
