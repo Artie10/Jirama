@@ -7,6 +7,7 @@
     <title>Tableaux De Bord</title>
 </head>
 <body>
-<h1>Tableaux de bord</h1>
+<h1>Tableaux de bord de MR {{$nom}}</h1>
+<h2> en attente</h2>
 </body>
 </html>

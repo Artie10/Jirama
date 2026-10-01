@@ -14,7 +14,7 @@ class DossierController extends Controller
             'residence_img'=>'required|image|mimes:jpg,png,jpeg,webp|max:5000',
             'Dmd_img'=>'required|image|mimes:jpg,png,jpeg,webp|max:5000',
             'autorisation_img'=>'required|file|mimes:pdf,docx|max:6000',
-        ]);
+             ]);
 
         $residence_img = null;
         if($request->hasFile('residence_img')){
