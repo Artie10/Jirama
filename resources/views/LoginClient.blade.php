@@ -1,15 +1,24 @@
 <section>
 <div class="entete">
+    <div class="compEnt">
     <div class="titre">
         <span class="point"></span>
         <span>Plateforme Nationale De Demande de Branchement neuf Eau</span>
     </div>
 
     <h1>Accéder à votre espace Client</h1>
-    <p>Plateforme pour les client du jirama souhaitant effectuer une demande de branchement neuf en Eau</p>
+    <p>Plateforme pour les client du jirama <br> souhaitant effectuer une demande de branchement neuf en Eau
+    <br>Ce plateforme est concue pour faciliter votre demande et suivre en temps réel l'evolution de votre dossier</p>
+    <div class="btn-item">
+        <button class="btn btn-room" onclick="window.location.href='#loginSection'">
+          <img src="./images/bed-solid.png" alt="" />&nbsp;&nbsp;Acceder à mon dossier
+
+        </button>
+    </div>
+    </div>
 </div>
 </section>
-<section class="">
+<section id="loginSection">
 <div class="login">
 
     <!-- Partie description -->
@@ -80,11 +89,9 @@
     width: 100%;
     margin-right: 0%
     max-width: 950px;
-    min-height: 6px;
-    padding: 42px;
+    min-height: 100vh;
+    padding-top: 100px;
     box-sizing: border-box;
-
-    border-radius: 22px;
 
     background:
         radial-gradient(
@@ -101,15 +108,22 @@
 
     color: white;
     overflow: hidden;
-
+    justify-content:center;
+    display:flex;
+    flex-direction:column;
     font-family: Arial, Helvetica, sans-serif;
+
+}
+.compEnt{
+     margin-left:6%;
+     animation: slideInUp 0.6s ease-out forwards;
 }
 
 .titre {
     display: flex;
     align-items: center;
-    gap: 14px;
-
+    gap: 20px;
+    margin: 5%;
     width: fit-content;
     padding: 10px 22px;
 
@@ -136,8 +150,8 @@
 }
 
 .entete h1 {
-    margin: 10px 0 11px;
 
+  margin: 3%;
     font-size: 40px;
     line-height: 1.08;
     font-weight: 70;
@@ -145,13 +159,36 @@
 
 .entete p{
     max-width: 850px;
-
+  margin: 3%;
     margin-bottom: 0px;
 
     color: #e5e9f2;
 
     font-size: 18px;
     line-height: 1.65;
+}
+.btn-item {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.btn {
+  padding: 1rem 2rem;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: 0.3s;
+    margin: 3%;
+}
+
+.btn-room {
+  background: #17233b;
+  color: #ff5b00;
+}
+
+.btn-room:hover {
+  transform: translateY(-3px);
 }
 
 * {
@@ -162,7 +199,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background: #f5f6fa;
+    background: #17233b;
     color: #17233b;
 }
 
@@ -174,6 +211,7 @@ body {
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    animation: slideInUp 0.6s ease-out forwards;
 }
 
 /* Barre supérieure */
@@ -348,4 +386,16 @@ input:focus {
         font-size: 14px;
     }
 }
+
+@keyframes slideInUp{
+    from{
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 </style>
