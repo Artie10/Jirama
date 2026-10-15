@@ -1,41 +1,29 @@
 <nav class="dashboard-navbar">
 
-    {{-- Logo --}}
-    <div class="navbar-logo">
-        <img src="{{ asset('photos/Dossier.png') }}" alt="VoltaRéseau">
-    </div>
-
     {{-- Menu --}}
     <div class="navbar-menu">
-
-        <a href="{{ route('dashboard') }}"
-           class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-            <span>Espace Client &</span>
-            <span>Terrain</span>
-        </a>
-
         <a href="{{ route('suivi') }}"
            class="nav-item {{ request()->routeIs('suivi') ? 'active' : '' }}">
-            <span>Mon Suivi en</span>
-            <span>direct</span>
+            <span>Suivie de dossier  et modification</span>
+
         </a>
 
         <a href="{{ route('demande.create') }}"
            class="nav-item {{ request()->routeIs('demande.create') ? 'active' : '' }}">
-            <span>Nouvelle</span>
-            <span>Demande</span>
+            <span>Nouvelle Demande</span>
+
         </a>
 
         <a href="{{ route('technicien') }}"
            class="nav-item {{ request()->routeIs('technicien') ? 'active' : '' }}">
-            <span>Espace Technicien</span>
-            <span>Terrain</span>
+            <span>Technicien Terrain</span>
+
         </a>
 
         <a href="{{ route('devis') }}"
            class="nav-item {{ request()->routeIs('devis') ? 'active' : '' }}">
-            <span>Mes Devis &</span>
-            <span>Dossiers</span>
+            <span>Mes Devis & Dossiers</span>
+
         </a>
 
     </div>

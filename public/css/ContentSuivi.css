@@ -1,0 +1,422 @@
+
+/*  EN-TÊTE DU DOSSIER  */
+.dossier-entete {
+    background: #eeedff;
+    border: 1px solid #e0dffa;
+    border-radius: 7px;
+    padding: 18px;
+    color: #172c52;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.dossier-infos {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 7px;
+    font-size: 10px;
+}
+
+.dossier-type {
+    background: #d8defe;
+    color: #183c91;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 12px;
+}
+
+.dossier-date,
+.dossier-ville {
+    color: #455a80;
+}
+
+.dossier-titre {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.dossier-titre h1 {
+    font-size: 25px;
+    font-weight: 500;
+    margin: 0;
+    color: #10264b;
+}
+
+.dossier-statut {
+    background: #f8dfe5;
+    color: #c45c70;
+    padding: 5px 9px;
+    border-radius: 14px;
+    font-size: 10px;
+}
+
+.dossier-adresse {
+    margin: 5px 0 0;
+    font-size: 11px;
+    color: #455a80;
+    line-height: 1.5;
+}
+
+
+/* ===== NOTIFICATION PRIORITAIRE ===== */
+.notification-prioritaire {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    margin-top: 17px;
+    padding: 20px 18px;
+    background: #eadcf0;
+    border-radius: 6px;
+    font-family: Arial, sans-serif;
+    color: #172c52;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.notification-icone {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    background: #bd2340;
+    color: white;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.notification-contenu {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-entete {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 6px;
+    font-size: 9px;
+}
+
+.notification-label {
+    color: #c12743;
+    font-weight: bold;
+    letter-spacing: 0.3px;
+}
+
+.notification-date {
+    color: #59657c;
+}
+
+.notification-contenu h3 {
+    margin: 0 0 5px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #182b4c;
+}
+
+.notification-contenu p {
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.5;
+    color: #53617a;
+}
+
+.notification-actions {
+    flex-shrink: 0;
+    width: 169px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-left: 5px;
+}
+
+.notification-actions a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 7px;
+    font-size: 10px;
+    text-decoration: none;
+    border-radius: 2px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.btn-deposer {
+    background: #b72440;
+    color: white;
+    font-weight: bold;
+}
+
+.btn-deposer:hover {
+    background: #991b35;
+}
+
+.btn-modele {
+    background: #f0efff;
+    color: #172c52;
+}
+
+.btn-modele:hover {
+    background: #dedcff;
+}
+
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .dossier-titre {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .dossier-titre h1 {
+        font-size: 21px;
+    }
+
+    .notification-prioritaire {
+        flex-wrap: wrap;
+    }
+
+    .notification-contenu {
+        flex-basis: calc(100% - 55px);
+    }
+
+    .notification-actions {
+        width: 100%;
+        margin: 5px 0 0;
+    }
+}
+
+
+/* Suivi */
+.cycle-dossier {
+    width: 100%;
+    padding: 24px 20px;
+    background: #ffffff;
+    border: 1px solid #edf0f6;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    color: #17243c;
+}
+
+/* En-tête */
+.cycle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.cycle-surtitre {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #0754d8;
+    letter-spacing: 0.4px;
+}
+
+.cycle-header h2 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.cycle-indicateur {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 10px;
+    background: #eef3ff;
+    border-radius: 4px;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+.indicateur-point {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #b8ccff;
+}
+
+/* Les cinq étapes */
+.cycle-etapes {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+    position: relative;
+}
+
+/* Ligne horizontale reliant les étapes */
+.cycle-etapes::before {
+    content: "";
+    position: absolute;
+    top: 61px;
+    left: 7%;
+    right: 7%;
+    height: 3px;
+    background: #e5ebf6;
+    z-index: 0;
+}
+
+/* Partie terminée de la ligne */
+.cycle-etapes::after {
+    content: "";
+    position: absolute;
+    top: 61px;
+    left: 7%;
+    width: 43%;
+    height: 3px;
+    background: #0754e9;
+    z-index: 0;
+}
+
+.cycle-etape {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+    padding: 12px 12px 13px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background: #f7f9fe;
+    border: 1px solid transparent;
+}
+
+/* Icônes */
+.etape-icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 25px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background: #e8eefb;
+    color: #6d7d9c;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.etape-ligne {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 5px;
+    font-size: 9px;
+    color: #475569;
+}
+
+.cycle-etape h3 {
+    margin: 0 0 5px;
+    font-size: 11px;
+    line-height: 1.4;
+    font-weight: 600;
+    color: #17243c;
+}
+
+.cycle-etape p {
+    margin: 0;
+    font-size: 10px;
+    line-height: 1.45;
+    color: #606b7c;
+}
+
+/* Badges */
+.etape-badge {
+    padding: 3px 7px;
+    border-radius: 10px;
+    background: #e7edfa;
+    color: #34445f;
+    font-size: 9px;
+    white-space: nowrap;
+}
+
+.etape-badge.alerte {
+    background: #ffdddd;
+    color: #e04444;
+}
+
+/* Étapes terminées */
+.cycle-etape.terminee {
+    background: #f6f8fd;
+}
+
+.terminee .etape-icone {
+    background: #dce7ff;
+    color: #0754e9;
+}
+
+/* Étape actuelle : BLEU */
+.cycle-etape.actuelle {
+    background: #f0f5ff;
+    border-color: #e5edff;
+}
+
+.actuelle .etape-icone {
+    background: #0754e9;
+    color: #ffffff;
+}
+
+.actuelle .etape-ligne > span:first-child {
+    color: #0754e9;
+    font-weight: bold;
+}
+
+/* Étapes à venir */
+.cycle-etape.avenir {
+    background: #fbfcff;
+    opacity: 0.8;
+}
+
+.avenir .etape-icone {
+    background: #edf1f9;
+    color: #7c879b;
+}
+
+/* Adaptation aux écrans plus petits */
+@media (max-width: 900px) {
+    .cycle-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .cycle-indicateur {
+        white-space: normal;
+    }
+
+    .cycle-etapes {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .cycle-etapes::before,
+    .cycle-etapes::after {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .cycle-etapes {
+        grid-template-columns: 1fr;
+    }
+
+    .cycle-dossier {
+        padding: 16px 12px;
+    }
+}
+

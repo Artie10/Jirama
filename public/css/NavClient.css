@@ -86,7 +86,7 @@
 
     height: 3px;
 
-    background: #164f91;
+    background: #f1ece6;
 }
 
 /* =========================
@@ -155,5 +155,5 @@
 }
 
 .logout-btn:hover {
-    color: #164f91;
+    color: #e77509;
 }
