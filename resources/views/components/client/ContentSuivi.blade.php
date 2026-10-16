@@ -8,7 +8,7 @@
         </span>
 
         <span class="dossier-date">
-            <i class="far fa-calendar"></i>
+            <i c  lass="far fa-calendar"></i>
             Dossier déposé le 12 Fév. 2025
         </span>
 
@@ -173,4 +173,378 @@
         </div>
 
     </div>
+</div>
+
+
+<div class="depot-document">
+
+    {{-- En-tête --}}
+    <div class="depot-header">
+        <span class="depot-surtitre">ESPACE DE RÉGULARISATION</span>
+
+        <div class="depot-header-ligne">
+            <h2>Déposer le document rectificatif</h2>
+            <span class="depot-format">Format accepté : PDF, JPG (Max 15 Mo)</span>
+        </div>
+
+        <p>
+            Ce téléversement direct s'intègre automatiquement au dossier
+            <strong>RAC-2025-0842</strong> sans interrompre le délai
+            d'instruction initial ni nécessiter une nouvelle demande.
+        </p>
+    </div>
+
+    {{-- Formulaire --}}
+    <form action="{{ route('devis') }}"
+          method="POST"
+          enctype="multipart/form-data"
+          id="formDepotDocument">
+
+        @csrf
+
+        <div class="depot-section-titre">
+            <span>▣ Type de document à joindre :</span>
+            <span class="depot-choix-info">Choix du document à régulariser</span>
+        </div>
+
+        {{-- Types de documents --}}
+        <div class="depot-types">
+
+            <label class="depot-type selected">
+                <input type="radio" name="type_document"
+                       value="autorisation_passage" checked>
+
+                <span class="type-contenu">
+                    <strong>Autorisation de passage / convention</strong>
+                    <small>
+                        Accord signé du terrain (parcelle B-114)
+                        et pièces d'identité associées.
+                    </small>
+                </span>
+
+                <span class="type-requis">Requis</span>
+            </label>
+
+            <label class="depot-type">
+                <input type="radio" name="type_document"
+                       value="photos_terrain">
+
+                <span class="type-contenu">
+                    <strong>Photos du terrain / coffret / poteau</strong>
+                    <small>
+                        Vues d'ensemble de la limite de propriété
+                        et des abords techniques.
+                    </small>
+                </span>
+            </label>
+
+            <label class="depot-type">
+                <input type="radio" name="type_document"
+                       value="piece_identite">
+
+                <span class="type-contenu">
+                    <strong>Pièce d'identité (CIN / Passeport)</strong>
+                    <small>
+                        Copie recto-verso en cours de validité
+                        du demandeur ou co-titulaire.
+                    </small>
+                </span>
+            </label>
+
+            <label class="depot-type">
+                <input type="radio" name="type_document"
+                       value="justificatif_domicile">
+
+                <span class="type-contenu">
+                    <strong>Justificatif de domicile / résidence</strong>
+                    <small>
+                        Facture de moins de 3 mois ou avis de taxe
+                        foncière / permis d'aménager.
+                    </small>
+                </span>
+            </label>
+
+        </div>
+
+        {{-- Zone de dépôt --}}
+        <label class="depot-zone" id="depotZone" for="fichierDocument">
+
+            <input type="file"
+                   name="fichier"
+                   id="fichierDocument"
+                   accept=".pdf,.jpg,.jpeg,.png"
+                   required>
+
+            <span class="depot-icone">☁</span>
+
+            <strong id="depotTexte">
+                Glissez-déposez le document sélectionné
+                ou parcourez vos fichiers
+            </strong>
+
+            <small id="depotNomFichier">
+                Doit comporter la signature du propriétaire de la parcelle
+                B-114 et la copie de la pièce d'identité afférente.
+            </small>
+
+        </label>
+
+        {{-- Note de sécurité --}}
+        <div class="depot-securite">
+            <span class="securite-icone">♧</span>
+
+            <div>
+                <strong>Traçabilité et horodatage certifié</strong>
+
+                <p>
+                    Dès versement, votre instructeur est notifié
+                    automatiquement. L'étude reprend sous 48 heures
+                    ouvrées. Si votre dossier est conforme et entièrement
+                    signé, le message de suivi indiquera automatiquement :
+                    « Votre dossier est complet, aucune modification
+                    nécessaire. Suivi actif. »
+                </p>
+            </div>
+        </div>
+
+        {{-- Bouton d'envoi --}}
+        <button type="submit" class="depot-submit">
+            Envoyer le document rectificatif
+        </button>
+
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('fichierDocument');
+    const zone = document.getElementById('depotZone');
+    const nomFichier = document.getElementById('depotNomFichier');
+    const types = document.querySelectorAll('.depot-type');
+
+    // Sélection du type de document
+    types.forEach(function (type) {
+        type.querySelector('input').addEventListener('change', function () {
+            types.forEach(el => el.classList.remove('selected'));
+            type.classList.add('selected');
+        });
+    });
+
+    // Affichage du nom du fichier
+    input.addEventListener('change', function () {
+        if (this.files.length > 0) {
+            nomFichier.textContent = this.files[0].name;
+            zone.classList.add('fichier-selectionne');
+        }
+    });
+
+    // Glisser-déposer
+    ['dragenter', 'dragover'].forEach(function (eventName) {
+        zone.addEventListener(eventName, function (event) {
+            event.preventDefault();
+            zone.classList.add('zone-active');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(function (eventName) {
+        zone.addEventListener(eventName, function (event) {
+            event.preventDefault();
+            zone.classList.remove('zone-active');
+        });
+    });
+
+    zone.addEventListener('drop', function (event) {
+        if (event.dataTransfer.files.length > 0) {
+            input.files = event.dataTransfer.files;
+            input.dispatchEvent(new Event('change'));
+        }
+    });
+});
+</script>
+
+{{-- JOURNALDESUIVI --}}
+
+<div class="journal-evenements">
+
+    {{-- En-tête --}}
+    <div class="journal-header">
+        <h2>Journal des événements & Traçabilité</h2>
+
+        <span class="journal-temps-reel">
+            <span class="temps-reel-point"></span>
+            Temps réel
+        </span>
+    </div>
+
+    {{-- Timeline --}}
+    <div class="journal-timeline">
+
+        {{-- Événement 1 --}}
+        <div class="journal-item">
+            <div class="journal-icon icon-alerte">
+                <span>▣</span>
+            </div>
+
+            <div class="journal-contenu">
+                <div class="journal-titre-ligne">
+                    <h3>Demande de pièce complémentaire & Notification SMS</h3>
+                    <span class="journal-date">Hier, à 16:42</span>
+                </div>
+
+                <p>
+                    Avis d'arrêt temporaire d'instruction émis par
+                    Ing. M. Laurent. Notification SMS adressée au
+                    +33 6 ** ** 78 12.
+                </p>
+            </div>
+        </div>
+
+        {{-- Événement 2 --}}
+        <div class="journal-item">
+            <div class="journal-icon icon-technique">
+                <span>▤</span>
+            </div>
+
+            <div class="journal-contenu">
+                <div class="journal-titre-ligne">
+                    <h3>Visite technique terrain clôturée</h3>
+                    <span class="journal-date">24 Fév. 2025, à 11:15</span>
+                </div>
+
+                <p>
+                    Mesure laser définitive : 38.5 mètres depuis le
+                    poste HTA/BT « Les Marais ». Présence d'un muret
+                    mitoyen notée sur le PV technique n° VT-44-8902.
+                </p>
+            </div>
+        </div>
+
+        {{-- Événement 3 --}}
+        <div class="journal-item">
+            <div class="journal-icon icon-affectation">
+                <span>♙</span>
+            </div>
+
+            <div class="journal-contenu">
+                <div class="journal-titre-ligne">
+                    <h3>Affectation à la cellule ingénierie territoriale</h3>
+                    <span class="journal-date">16 Fév. 2025, à 09:30</span>
+                </div>
+
+                <p>
+                    Dossier déclaré recevable administrativement.
+                    Référent technique désigné : M. Laurent
+                    (Pôle Raccordement Loire-Atlantique).
+                </p>
+            </div>
+        </div>
+
+        {{-- Événement 4 --}}
+        <div class="journal-item">
+            <div class="journal-icon icon-validation">
+                <span>✓</span>
+            </div>
+
+            <div class="journal-contenu">
+                <div class="journal-titre-ligne">
+                    <h3>Enregistrement initial du dossier en ligne</h3>
+                    <span class="journal-date">12 Fév. 2025, à 14:08</span>
+                </div>
+
+                <p>
+                    Téléversement du permis de construire PC 044 109 24
+                    P0034 et plan de masse cadastral.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{{-- Estimation MAT ET dEVIS --}}
+
+<div class="panneau-devis">
+
+    {{-- 1. Paramètres techniques --}}
+    <section class="parametres-techniques">
+
+        <div class="parametres-header">
+            <h3>Paramètres techniques</h3>
+            <span class="parametres-icone">☷</span>
+        </div>
+
+        <div class="parametre-ligne">
+            <span>Puissance de raccordement</span>
+            <strong>12 KVA (60 A)</strong>
+        </div>
+
+        <div class="parametre-ligne">
+            <span>Type d'alimentation</span>
+            <strong>Monophasé 230 V</strong>
+        </div>
+
+        <div class="parametre-ligne">
+            <span>Distance mesurée terrain</span>
+            <strong>38,5 mètres</strong>
+        </div>
+
+        <div class="parametre-ligne">
+            <span>Type de branchement</span>
+            <strong>Type 2 (Cpt en limite)</strong>
+        </div>
+
+        <div class="parametre-ligne">
+            <span>Usage de l'installation</span>
+            <strong>Maison individuelle neuve</strong>
+        </div>
+
+        <div class="parametre-ligne">
+            <span>Injection photovoltaïque</span>
+            <strong>Non demandée</strong>
+        </div>
+
+    </section>
+
+
+    {{-- 2. Contact instructeur --}}
+    <section class="contact-instructeur">
+
+        <a href="{{ route('devis') }}"
+           class="contact-question">
+            <span>▣</span>
+            Poser une question à l'instructeur
+        </a>
+
+        <a href="tel:0240000018" class="contact-telephone">
+            <span>☎</span>
+            Ligne directe : 02 40 ** ** 18
+        </a>
+
+    </section>
+
+
+    {{-- 3. Estimation du devis --}}
+    <section class="estimation-card">
+
+        <div class="estimation-header">
+            <span>ESTIMATION INDICATIVE</span>
+            <span class="estimation-icone">▦</span>
+        </div>
+
+        <div class="estimation-prix">
+            2 140,00 € TTC
+        </div>
+
+        <div class="estimation-details">
+            Base tarifaire Enedis 2025 · Tranchée & Coffret
+        </div>
+
+        <p class="estimation-description">
+            Ce montant intègre la réalisation tarifaire basée sur
+            40 % prise en charge par le TURPE. Le devis ferme vous
+            sera délivré sous 5 jours après réception de la servitude.
+        </p>
+
+    </section>
+
 </div>
