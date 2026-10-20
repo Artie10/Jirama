@@ -1,4 +1,4 @@
-
+<div class="dossier-page">
 {{-- En-tête du dossier --}}
 <div class="dossier-entete">
 
@@ -8,12 +8,12 @@
         </span>
 
         <span class="dossier-date">
-            <i c  lass="far fa-calendar"></i>
+
             Dossier déposé le 12 Fév. 2025
         </span>
 
         <span class="dossier-ville">
-            <i class="fas fa-map-marker-alt"></i>
+
             Nantes (44200)
         </span>
     </div>
@@ -547,4 +547,5 @@ document.addEventListener('DOMContentLoaded', function () {
 
     </section>
 
+</div>
 </div>

@@ -54,7 +54,7 @@ Route::post('/logout', function () {
 
 
 })->name('logout');
-Route::view('/','tableauxDeBordClient');
+Route::view('/','TableauxDeBordAdmin')->name('tableauxDeBordAdmin');
 
 
 Route::fallback(function(){
