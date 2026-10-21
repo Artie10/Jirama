@@ -54,7 +54,7 @@ Route::post('/logout', function () {
 
 
 })->name('logout');
-Route::view('/','TableauxDeBordAdmin')->name('tableauxDeBordAdmin');
+Route::view('/','TraitementDossierA')->name('TraitementDossierA');
 
 
 Route::fallback(function(){
