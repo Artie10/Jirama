@@ -54,7 +54,7 @@ Route::post('/logout', function () {
 
 
 })->name('logout');
-Route::view('/','components.client.DemandeRaccordement')->name('TraitementDossierA');
+Route::view('/','components.Mesure.EtudeTerrain')->name('TraitementDossierA');
 
 
 Route::fallback(function(){
