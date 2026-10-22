@@ -54,7 +54,7 @@ Route::post('/logout', function () {
 
 
 })->name('logout');
-Route::view('/','TraitementDossierA')->name('TraitementDossierA');
+Route::view('/','components.client.DemandeRaccordement')->name('TraitementDossierA');
 
 
 Route::fallback(function(){
