@@ -16,7 +16,9 @@ return new class extends Migration
             $table->string('NumDossier',)->unique();
             $table->string('Nom');
             $table->string('Mail')->unique();
-            $table->integer('Cin');
+            $table->integer('Cin')->unique();
+            $table->string('telephone', 20)->unique();
+            $table->string('password');
             $table->string('Dmd_img');
             $table->string('residence_img');
             $table->string('autorisation_img')->nullable();

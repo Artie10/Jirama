@@ -3,21 +3,7 @@
 use Faker\Guesser\Name;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-//Route::get('/{titre}/{trav}/{att}',function($titre,$trav,$att){
-    //$titre='Bonjour MR';
-    //$trav=18;
-    //$att='Vous avez';
-
-//return view('tableauxDeBord',[
-  //  'titre'=>$titre,
-    //'trav'=>$trav,
-    //'att'=>$att
-//]);
-//});
-
-
-
-
+use App\Http\Controllers\Auth\ClientAuthController;
 
 // Tableau de bord
 Route::get('/dashboard', function () {
@@ -44,6 +30,9 @@ Route::get('/devis', function () {
     return view('welcome');
 })->name('devis');
 
+//CONNIXION
+Route::post('/client/login', [ClientAuthController::class, 'login'])
+    ->name('client.login.submit');
 Route::post('/logout', function () {
 
     Auth::logout();
@@ -52,11 +41,15 @@ Route::post('/logout', function () {
     request()->session()->regenerateToken();
 
 
-
+// DECONECTION
 })->name('logout');
-Route::view('/','components.Mesure.EtudeTerrain')->name('TraitementDossierA');
+Route::view('/','LoginClient')->name('TraitementDossierA');
 
 
 Route::fallback(function(){
     return 'Une erreur est survenue';
 });
+
+Route::get('/client/dashboard', function () {
+    return 'Bienvenue dans votre espace client !';
+})->middleware('auth:client')->name('client.dashboard');

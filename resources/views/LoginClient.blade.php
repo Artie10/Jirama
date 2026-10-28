@@ -39,50 +39,55 @@
 
     </div>
 
-    <!-- Formulaire -->
-    <div class="formulaire">
+    
 
-        <label for="reference">
-            Référence dossier ou Courriel demandeur
-        </label>
+<!-- Formulaire de connexion -->
+<form class="formulaire" method="POST" action="{{ route('client.login.submit') }}">
+    @csrf
 
-        <input
-            type="text"
-            id="reference"
-            name="reference"
-            placeholder="Ex: RAC-2025-8842 ou client@domaine.com"
-        >
+    <label for="reference">
+        Référence dossier ou Courriel demandeur
+    </label>
 
-        <div class="password-label">
-            <label for="password">
-                Code d'accès sécurisé
-            </label>
+    <input
+        type="text"
+        id="reference"
+        name="reference"
+        value="{{ old('reference') }}"
+        placeholder="Ex: RAC-2025-8842 ou client@domaine.com"
+        required
+    >
 
-            <a href="#">Code oublié ?</a>
-        </div>
+    @error('reference')
+        <p class="msgError">{{ $message }}</p>
+    @enderror
 
-        <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="••••••••"
-        >
-    </div>
-    <p class="msgError"></p>
-    <button class="btn-login">Acceder à mon espace client</button>
-
-    <!-- Assistance -->
-    <div class="assistance">
-        <span>♧</span>
-        <p>
-            Assistance raccordement : <strong>0800 400 900</strong>
-        </p>
-
-        <strong>Guichet Ouvert<br>24/7</strong>
+    <div class="password-label">
+        <label for="password">Code d'accès sécurisé</label>
+        <a href="#">Code oublié ?</a>
     </div>
 
-</div>
-</div>
+    <input
+        type="password"
+        id="password"
+        name="password"
+        placeholder="••••••••"
+        required
+    >
+
+    @error('password')
+        <p class="msgError">{{ $message }}</p>
+    @enderror
+
+    @if (session('error'))
+        <p class="msgError">{{ session('error') }}</p>
+    @endif
+
+    <button type="submit" class="btn-login">
+        Accéder à mon espace client
+    </button>
+</form>
+
 </section>
 <style>
 .entete {
