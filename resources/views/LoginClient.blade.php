@@ -1,23 +1,105 @@
-<section>
-<div class="entete">
-    <div class="compEnt">
-    <div class="titre">
-        <span class="point"></span>
-        <span>Plateforme Nationale De Demande de Branchement neuf Eau</span>
-    </div>
 
-    <h1>Accéder à votre espace Client</h1>
-    <p>Plateforme pour les client du jirama <br> souhaitant effectuer une demande de branchement neuf en Eau
-    <br>Ce plateforme est concue pour faciliter votre demande et suivre en temps réel l'evolution de votre dossier</p>
-    <div class="btn-item">
-        <button class="btn btn-room" onclick="window.location.href='#loginSection'">
-          <img src="./images/bed-solid.png" alt="" />&nbsp;&nbsp;Acceder à mon dossier
+<section class="hero-client">
+    <div class="hero-client-container">
 
-        </button>
+        <div class="hero-client-content">
+
+            <div class="hero-badge">
+                <span class="hero-status-dot"></span>
+                Service en ligne · JIRAMA
+            </div>
+
+            <h1>
+                Votre branchement d'eau,
+                <span>en toute simplicité.</span>
+            </h1>
+
+            <p class="hero-description">
+                Bienvenue sur la Plateforme Nationale de Demande
+                de Branchement Neuf en Eau de la JIRAMA.
+                Effectuez votre demande en ligne, transmettez vos
+                documents et suivez l'évolution de votre dossier
+                depuis votre espace client.
+            </p>
+
+            <div class="hero-actions">
+
+                <a href="#loginSection" class="hero-btn hero-btn-primary">
+                    <i class="fa-solid fa-folder-open"></i>
+                    Accéder à mon dossier
+                </a>
+
+                <a href="{{ route('demande.create') }}"
+                   class="hero-btn hero-btn-secondary">
+                    <i class="fa-solid fa-file-circle-plus"></i>
+                    Effectuer une demande
+                </a>
+
+            </div>
+
+            <div class="hero-features">
+                <div class="hero-feature">
+                    <span class="hero-feature-icon">
+                        <i class="fa-solid fa-laptop"></i>
+                    </span>
+                    <div>
+                        <strong>100 % en ligne</strong>
+                        <small>Une démarche simplifiée</small>
+                    </div>
+                </div>
+
+                <div class="hero-feature">
+                    <span class="hero-feature-icon">
+                        <i class="fa-solid fa-file-circle-check"></i>
+                    </span>
+                    <div>
+                        <strong>Suivi de dossier</strong>
+                        <small>Consultez son évolution</small>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="hero-client-visual">
+            <div class="hero-visual-circle"></div>
+
+            <div class="hero-visual-card">
+                <div class="hero-water-icon">
+                    <i class="fa-solid fa-droplet"></i>
+                </div>
+
+                <span class="hero-visual-label">
+                    VOTRE SERVICE PUBLIC
+                </span>
+
+                <h2>Un accès simplifié à l'eau</h2>
+
+                <p>
+                    Réalisez vos démarches à distance
+                    et suivez votre demande étape par étape.
+                </p>
+
+                <div class="hero-visual-line"></div>
+
+                <div class="hero-visual-footer">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    Une plateforme dédiée aux demandeurs
+                </div>
+            </div>
+
+            <div class="hero-floating-icon hero-floating-top">
+                <i class="fa-solid fa-droplet"></i>
+            </div>
+
+            <div class="hero-floating-icon hero-floating-bottom">
+                <i class="fa-solid fa-file-circle-check"></i>
+            </div>
+        </div>
+
     </div>
-    </div>
-</div>
 </section>
+
 <section id="loginSection">
 <div class="login">
 
@@ -39,7 +121,7 @@
 
     </div>
 
-    
+
 
 <!-- Formulaire de connexion -->
 <form class="formulaire" method="POST" action="{{ route('client.login.submit') }}">
@@ -400,6 +482,359 @@ input:focus {
     to{
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+
+/* ===== SECTION D'ACCUEIL JIRAMA ===== */
+
+.hero-client {
+    position: relative;
+    overflow: hidden;
+    padding: 90px 7%;
+    background: linear-gradient(135deg, #f4f9ff 0%, #ffffff 55%, #eaf5ff 100%);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.hero-client::before {
+    content: "";
+    position: absolute;
+    width: 420px;
+    height: 420px;
+    top: -220px;
+    left: -130px;
+    border-radius: 50%;
+    background: rgba(16, 112, 210, 0.07);
+}
+
+.hero-client-container {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    align-items: center;
+    gap: 65px;
+    max-width: 1250px;
+    margin: 0 auto;
+}
+
+.hero-client-content {
+    max-width: 680px;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    margin-bottom: 25px;
+    border: 1px solid #d6e8fa;
+    border-radius: 30px;
+    background: #ffffff;
+    color: #1457a6;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 5px 20px rgba(20, 87, 166, 0.05);
+}
+
+.hero-status-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #19a974;
+    box-shadow: 0 0 0 4px rgba(25, 169, 116, 0.12);
+}
+
+.hero-client h1 {
+    margin: 0 0 22px;
+    color: #102b4e;
+    font-size: clamp(34px, 4.2vw, 56px);
+    line-height: 1.16;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+}
+
+.hero-client h1 span {
+    display: block;
+    color: #0875d1;
+}
+
+.hero-description {
+    max-width: 590px;
+    margin: 0;
+    color: #62748a;
+    font-size: 16px;
+    line-height: 1.9;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 32px;
+}
+
+.hero-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 52px;
+    padding: 0 22px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    transition: transform 0.2s ease, box-shadow 0.2s ease,
+                background 0.2s ease;
+}
+
+.hero-btn:hover {
+    transform: translateY(-3px);
+}
+
+.hero-btn-primary {
+    color: #ffffff;
+    background: #0875d1;
+    box-shadow: 0 9px 22px rgba(8, 117, 209, 0.2);
+}
+
+.hero-btn-primary:hover {
+    color: #ffffff;
+    background: #075eaa;
+    box-shadow: 0 12px 25px rgba(8, 117, 209, 0.28);
+}
+
+.hero-btn-secondary {
+    color: #0875d1;
+    border-color: #b9d9f5;
+    background: #ffffff;
+}
+
+.hero-btn-secondary:hover {
+    color: #075eaa;
+    border-color: #0875d1;
+    background: #f3f9ff;
+}
+
+.hero-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-top: 42px;
+}
+
+.hero-feature {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.hero-feature-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    color: #0875d1;
+    background: #e4f2ff;
+}
+
+.hero-feature strong,
+.hero-feature small {
+    display: block;
+}
+
+.hero-feature strong {
+    margin-bottom: 5px;
+    color: #193957;
+    font-size: 13px;
+}
+
+.hero-feature small {
+    color: #7b8da2;
+    font-size: 12px;
+}
+
+/* ===== CARTE VISUELLE ===== */
+
+.hero-client-visual {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+}
+
+.hero-visual-circle {
+    position: absolute;
+    width: min(360px, 90%);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #c8e7ff, #eaf6ff);
+}
+
+.hero-visual-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 340px;
+    padding: 35px 30px;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: 0 25px 70px rgba(27, 81, 133, 0.14);
+}
+
+.hero-water-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 65px;
+    height: 65px;
+    margin-bottom: 25px;
+    border-radius: 20px;
+    color: #ffffff;
+    background: linear-gradient(145deg, #168be8, #0759b4);
+    font-size: 28px;
+}
+
+.hero-visual-label {
+    color: #0875d1;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.hero-visual-card h2 {
+    margin: 13px 0;
+    color: #102b4e;
+    font-size: 25px;
+    line-height: 1.35;
+}
+
+.hero-visual-card p {
+    margin: 0;
+    color: #708198;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.hero-visual-line {
+    height: 1px;
+    margin: 23px 0 18px;
+    background: #e7eef5;
+}
+
+.hero-visual-footer {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #526981;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.hero-visual-footer i {
+    color: #15976c;
+}
+
+.hero-floating-icon {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 55px;
+    height: 55px;
+    border: 4px solid #ffffff;
+    border-radius: 17px;
+    background: #ffffff;
+    color: #0875d1;
+    box-shadow: 0 10px 30px rgba(27, 81, 133, 0.12);
+    font-size: 20px;
+}
+
+.hero-floating-top {
+    top: 30px;
+    right: 5px;
+}
+
+.hero-floating-bottom {
+    bottom: 30px;
+    left: 0;
+    color: #15976c;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 900px) {
+    .hero-client {
+        padding: 65px 6%;
+    }
+
+    .hero-client-container {
+        grid-template-columns: 1fr;
+        gap: 35px;
+    }
+
+    .hero-client-content {
+        max-width: 100%;
+    }
+
+    .hero-client-visual {
+        min-height: 370px;
+    }
+}
+
+@media (max-width: 520px) {
+    .hero-client {
+        padding: 45px 20px;
+    }
+
+    .hero-client h1 {
+        font-size: 35px;
+        letter-spacing: -0.8px;
+    }
+
+    .hero-description {
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+    }
+
+    .hero-btn {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .hero-features {
+        flex-direction: column;
+        gap: 18px;
+        margin-top: 30px;
+    }
+
+    .hero-client-visual {
+        min-height: 340px;
+    }
+
+    .hero-visual-card {
+        max-width: 300px;
+        padding: 28px 23px;
+    }
+
+    .hero-floating-top {
+        right: -3px;
+    }
+
+    .hero-floating-bottom {
+        left: -3px;
     }
 }
 

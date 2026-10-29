@@ -2,17 +2,15 @@
 
 namespace App\Models;
 
-
-
-
-
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
+use Illuminate\Auth\MustVerifyEmail;
+use Illuminate\Notifications\Notifiable;
 
-class Dossier extends Authenticatable
+class Dossier extends Authenticatable implements MustVerifyEmailContract
 {
-    use HasFactory;
+    use HasFactory, MustVerifyEmail, Notifiable;
 
     protected $table = 'dossiers';
 
@@ -20,13 +18,16 @@ class Dossier extends Authenticatable
         'NumDossier',
         'Nom',
         'Mail',
+        'Cin',
         'telephone',
         'password',
-        'Cin',
         'Dmd_img',
         'residence_img',
         'autorisation_img',
         'statut',
+        'photo_identite',
+        'cin_document',
+        'statut_demandeur',
     ];
 
     protected $hidden = [
@@ -34,19 +35,29 @@ class Dossier extends Authenticatable
         'remember_token',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+
     public function getAuthPasswordName(): string
     {
         return 'password';
     }
 
-
-    //RELATION AVEC LE MODEL MESURE
-    public function mesures(){
-        return $this->belongsTo(Mesure::class);
-    }
-    //RELATION AVEC LE MODEL DEVIS
-    public function devis(){
-        return $this->belongsTo(Devis::class);
+    public function getEmailForVerification(): string
+    {
+        return $this->Mail;
     }
 
+    /**
+     * Utiliser la colonne Mail comme adresse de notification.
+     */
+    public function routeNotificationForMail($notification = null): string
+    {
+        return $this->Mail;
+    }
 }

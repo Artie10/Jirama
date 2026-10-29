@@ -138,6 +138,38 @@
                         @error('email') <p class="vr-error">{{ $message }}</p> @enderror
                     </div>
                 </div>
+                <div class="vr-fields-two">
+    <div class="vr-field">
+        <label for="password">Mot de passe <em>*</em></label>
+        <input
+            id="password"
+            name="password"
+            type="password"
+            minlength="8"
+            autocomplete="new-password"
+            placeholder="8 caractères minimum"
+            required
+        >
+        @error('password')
+            <p class="vr-error">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <div class="vr-field">
+        <label for="password_confirmation">
+            Confirmer le mot de passe <em>*</em>
+        </label>
+        <input
+            id="password_confirmation"
+            name="password_confirmation"
+            type="password"
+            minlength="8"
+            autocomplete="new-password"
+            placeholder="Répétez votre mot de passe"
+            required
+        >
+    </div>
+</div>
             </section>
 
             <section class="vr-card">

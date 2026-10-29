@@ -4,11 +4,23 @@ use Faker\Guesser\Name;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\ClientAuthController;
+use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use App\Http\Controllers\DossierController;
 
 // Tableau de bord
-Route::get('/dashboard', function () {
-    return view('welcome');
-})->name('dashboard');
+// Tableau de bord réel du client
+Route::get('/client/dashboard', function (Request $request) {
+
+    $client = $request->user('client');
+
+    if (!$client->hasVerifiedEmail()) {
+        return redirect()->route('verification.notice');
+    }
+
+    return view('components.client.dashboard');
+
+})->middleware('auth:client')->name('client.dashboard');
 
 // Suivi
 Route::get('/suivi', function () {
@@ -33,16 +45,19 @@ Route::get('/devis', function () {
 //CONNIXION
 Route::post('/client/login', [ClientAuthController::class, 'login'])
     ->name('client.login.submit');
-Route::post('/logout', function () {
 
-    Auth::logout();
+//DECONECTION
+Route::post('/logout', function (Request $request) {
 
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
+    Auth::guard('client')->logout();
 
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
 
-// DECONECTION
+    return redirect()->route('TraitementDossierA');
+
 })->name('logout');
+
 Route::view('/','LoginClient')->name('TraitementDossierA');
 
 
@@ -50,6 +65,69 @@ Route::fallback(function(){
     return 'Une erreur est survenue';
 });
 
-Route::get('/client/dashboard', function () {
-    return 'Bienvenue dans votre espace client !';
+Route::get('components/client/dashboard', function () {
+
 })->middleware('auth:client')->name('client.dashboard');
+
+
+//VERIFICATION EMAIL
+// Page d'information pour les e-mails à vérifier
+Route::get('/client/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth:client')->name('verification.notice');
+
+// Lien signé reçu par e-mail
+Route::get('/client/email/verify/{id}/{hash}', function (
+    EmailVerificationRequest $request
+) {
+    if ($request->user('client')->hasVerifiedEmail()) {
+        return redirect()->route('client.dashboard');
+    }
+
+    $request->user('client')->markEmailAsVerified();
+
+    return redirect()->route('client.dashboard')
+        ->with('success', 'Votre adresse e-mail a été vérifiée.');
+})->middleware(['auth:client', 'signed', 'throttle:6,1'])
+  ->name('verification.verify');
+
+// Renvoyer l'e-mail de vérification
+Route::post('/client/email/verification-notification', function (Request $request) {
+    $user = $request->user('client');
+
+    if ($user->hasVerifiedEmail()) {
+        return redirect()->route('client.dashboard');
+    }
+
+    $user->sendEmailVerificationNotification();
+
+    return back()->with('status', 'verification-link-sent');
+})->middleware(['auth:client', 'throttle:6,1'])
+  ->name('verification.send');
+
+
+  //ROUTE NOUVELLE DEMANDE
+
+
+
+Route::get('/nouvelle-demande', [
+    DossierController::class,
+    'create',
+])->name('demande.create');
+
+Route::post('/nouvelle-demande', [
+    DossierController::class,
+    'store',
+])->name('demande.store');
+
+//Affichage demande
+Route::get('/nouvelle-demande', function () {
+    return view('components.client.DemandeRaccordement', [
+        'action' => route('demande.store'),
+        'nom' => old('nom', ''),
+        'prenom' => old('prenom', ''),
+        'cin' => old('cin', ''),
+        'telephone' => old('telephone', ''),
+        'email' => old('email', ''),
+    ]);
+})->name('demande.create');
