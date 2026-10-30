@@ -65,10 +65,25 @@ Route::fallback(function(){
     return 'Une erreur est survenue';
 });
 
-Route::get('components/client/dashboard', function () {
+//CHARGEMENT Dashboard et chargement mesure
+Route::get('/client/dashboard', function (Request $request) {
+
+    $client = $request->user('client');
+
+    if (!$client->hasVerifiedEmail()) {
+        return redirect()->route('verification.notice');
+    }
+
+    // Charger les mesures associées au dossier du client
+    $client->load('mesures');
+
+    return response()
+        ->view('components.client.dashboard', compact('client'))
+        ->header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+        ->header('Pragma', 'no-cache')
+        ->header('Expires', '0');
 
 })->middleware('auth:client')->name('client.dashboard');
-
 
 //VERIFICATION EMAIL
 // Page d'information pour les e-mails à vérifier

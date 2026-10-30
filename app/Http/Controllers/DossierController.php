@@ -169,5 +169,12 @@ class DossierController extends Controller
                 'success',
                 'Votre demande a été enregistrée. Vérifiez votre boîte e-mail pour confirmer votre adresse.'
             );
+
+
+        $dossier = Auth::guard('client')->user();
+
+            $mesures = $dossier->mesures;
+
+                return view('components.client.dashboard', compact('dossier', 'mesures'));
     }
 }

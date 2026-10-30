@@ -1,3 +1,22 @@
+@props(['dossier'])
+
+@php
+    $dateDepot = $dossier->created_at
+        ? $dossier->created_at->format('d/m/Y')
+        : 'Non renseignée';
+
+    $statut = $dossier->statut ?? 'En attente';
+
+    $statuts = [
+        'en_attente' => 'En attente de traitement',
+        'en_cours' => 'Dossier en cours de traitement',
+        'valide' => 'Dossier validé',
+        'refuse' => 'Dossier refusé',
+        'incomplet' => 'Complément demandé',
+    ];
+
+    $statutAffiche = $statuts[strtolower($statut)] ?? $statut;
+@endphp
 <div class="dossier-page">
 {{-- En-tête du dossier --}}
 <div class="dossier-entete">
@@ -9,27 +28,27 @@
 
         <span class="dossier-date">
 
-            Dossier déposé le 12 Fév. 2025
+            Dossier déposé {{ $dateDepot }}
         </span>
 
         <span class="dossier-ville">
 
-            Nantes (44200)
+              {{ $dossier->Nom }}
         </span>
     </div>
 
     <div class="dossier-titre">
-        <h1>Dossier N° RAC-2025-0842</h1>
+        <h1>Dossier N° {{ $dossier->NumDossier }}</h1>
 
         <span class="dossier-statut">
             <i class="fas fa-exclamation-circle"></i>
-            Action requise : Complément demandé
+         {{ $statutAffiche }}
         </span>
     </div>
 
     <p class="dossier-adresse">
-        Parcelle B-112, Lieu-dit Le Chêne Vert, 44200 Nantes
-        • Gestionnaire délégué Enedis Loire-Atlantique.
+      Adresse e-mail : {{ $dossier->Mail }}
+        • Téléphone : {{ $dossier->telephone ?? 'Non renseigné' }}
     </p>
 
 </div>
@@ -466,44 +485,54 @@ document.addEventListener('DOMContentLoaded', function () {
 <div class="panneau-devis">
 
     {{-- 1. Paramètres techniques --}}
-    <section class="parametres-techniques">
 
-        <div class="parametres-header">
-            <h3>Paramètres techniques</h3>
-            <span class="parametres-icone">☷</span>
+@php
+    $mesure = $dossier->mesures
+        ->sortByDesc('date')
+        ->first();
+@endphp
+
+<section class="parametres-techniques">
+
+    <div class="parametres-header">
+        <h3>Paramètres techniques</h3>
+        <span class="parametres-icone">☷</span>
+    </div>
+
+    @if($mesure)
+
+        <div class="parametre-ligne">
+            <span>Numéro de mesure</span>
+            <strong>{{ $mesure->NumMesure }}</strong>
         </div>
 
         <div class="parametre-ligne">
-            <span>Puissance de raccordement</span>
-            <strong>12 KVA (60 A)</strong>
+            <span>Longueur mesurée</span>
+            <strong>{{ $mesure->longueur }} mètres</strong>
         </div>
 
         <div class="parametre-ligne">
-            <span>Type d'alimentation</span>
-            <strong>Monophasé 230 V</strong>
+            <span>Autorisation</span>
+            <strong>
+                {{ $mesure->autorisation }}
+            </strong>
         </div>
 
-        <div class="parametre-ligne">
-            <span>Distance mesurée terrain</span>
-            <strong>38,5 mètres</strong>
+    @else
+
+        <div class="mesure-attente">
+            <span><img src="/public/photos/Attente.png" alt=""></span>
+            <strong>Prise de mesure en attente</strong>
+            <p>
+                Ces informations seront disponibles après
+                la prise de mesure sur le terrain.
+            </p>
         </div>
 
-        <div class="parametre-ligne">
-            <span>Type de branchement</span>
-            <strong>Type 2 (Cpt en limite)</strong>
-        </div>
+    @endif
 
-        <div class="parametre-ligne">
-            <span>Usage de l'installation</span>
-            <strong>Maison individuelle neuve</strong>
-        </div>
+</section>
 
-        <div class="parametre-ligne">
-            <span>Injection photovoltaïque</span>
-            <strong>Non demandée</strong>
-        </div>
-
-    </section>
 
 
     {{-- 2. Contact instructeur --}}
@@ -524,28 +553,60 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     {{-- 3. Estimation du devis --}}
-    <section class="estimation-card">
 
-        <div class="estimation-header">
-            <span>ESTIMATION INDICATIVE</span>
-            <span class="estimation-icone">▦</span>
-        </div>
+@php
+    $mesure = $dossier->mesures
+        ->sortByDesc('date')
+        ->first();
+
+    $dossierValide = strtolower(trim($dossier->statut ?? '')) === 'valide';
+
+    $estimationDisponible = $mesure && $dossierValide;
+@endphp
+
+<section class="estimation-card">
+
+    <div class="estimation-header">
+        <span>ESTIMATION INDICATIVE</span>
+        <span class="estimation-icone">▦</span>
+    </div>
+
+    @if($estimationDisponible)
 
         <div class="estimation-prix">
-            2 140,00 € TTC
+            Estimation en cours
         </div>
 
         <div class="estimation-details">
-            Base tarifaire Enedis 2025 · Tranchée & Coffret
+            Mesure effectuée et dossier validé
         </div>
 
         <p class="estimation-description">
-            Ce montant intègre la réalisation tarifaire basée sur
-            40 % prise en charge par le TURPE. Le devis ferme vous
-            sera délivré sous 5 jours après réception de la servitude.
+            Votre dossier a été mesuré et validé.
+            Le montant estimatif sera communiqué après
+            l'établissement de votre estimation par un employé.
         </p>
 
-    </section>
+    @else
+
+        <div class="estimation-prix">
+            En attente
+        </div>
+
+        <div class="estimation-details">
+            Estimation non disponible pour le moment
+        </div>
+
+        <p class="estimation-description">
+            L'estimation indicative sera disponible après
+            la prise de mesure sur le terrain et la validation
+            de votre dossier par un employé.
+        </p>
+
+    @endif
+
+</section>
+
 
 </div>
 </div>

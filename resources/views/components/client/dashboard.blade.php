@@ -14,10 +14,10 @@
 </head>
 <body>
 
-    <x-client.BarNavC />
+    <x-client.BarNavC :dossier="$client" />
 
     <main>
-        <x-client.ContentSuivi />
+        <x-client.ContentSuivi :dossier="$client" />
     </main>
 
 </body>

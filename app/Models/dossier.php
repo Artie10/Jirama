@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
-
+use App\Models\Mesure;
 class Dossier extends Authenticatable implements MustVerifyEmailContract
 {
     use HasFactory, MustVerifyEmail, Notifiable;
@@ -60,4 +60,17 @@ class Dossier extends Authenticatable implements MustVerifyEmailContract
     {
         return $this->Mail;
     }
+
+
+
+
+public function mesures()
+{
+    return $this->hasMany(
+        \App\Models\Mesure::class,
+        'NumDossier',
+        'NumDossier'
+    );
+}
+
 }

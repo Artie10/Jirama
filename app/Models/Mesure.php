@@ -3,20 +3,30 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Dossier;
 
 class Mesure extends Model
 {
+    protected $table = 'mesures';
+
     protected $fillable = [
         'NumMesure',
         'NumDossier',
         'autorisation',
         'date',
-        'longueur'
+        'longueur',
     ];
-    
-    //relation avec le model dossier
+
+    protected $casts = [
+        'date' => 'date',
+    ];
+
     public function dossier()
     {
-        return $this->belongTo(dossier::class, 'NumDossier', 'NumDossier');
+        return $this->belongsTo(
+            Dossier::class,
+            'NumDossier',
+            'NumDossier'
+        );
     }
 }
