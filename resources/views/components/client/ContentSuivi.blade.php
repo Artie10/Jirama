@@ -536,7 +536,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     {{-- 2. Contact instructeur --}}
-    <section class="contact-instructeur">
+<section class="contact-instructeur">
 
         <a href="{{ route('devis') }}"
            class="contact-question">
