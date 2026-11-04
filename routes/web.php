@@ -7,7 +7,7 @@ use App\Http\Controllers\Auth\ClientAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\DossierController;
-
+use App\Http\Controllers\AdminAuthController;
 // Tableau de bord
 // Tableau de bord réel du client
 Route::get('/client/dashboard', function (Request $request) {
@@ -146,3 +146,20 @@ Route::get('/nouvelle-demande', function () {
         'email' => old('email', ''),
     ]);
 })->name('demande.create');
+
+// APRES CONNEX PAGE ADMIN
+Route::view('tableauxDeBordAdmin', 'tableauxDeBordAdmin')
+    ->middleware('auth:employe')
+    ->name('admin.dashboard');
+
+Route::view('pageLoginAdmin', 'pageLoginAdmin')
+    ->middleware('guest:employe')
+    ->name('admin.login');
+
+Route::post('admin/login', [AdminAuthController::class, 'login'])
+    ->middleware('guest:employe')
+    ->name('admin.login.submit');
+
+Route::view('tableauxDeBordAdmin', 'tableauxDeBordAdmin')
+    ->middleware('auth:employe')
+    ->name('admin.dashboard');
