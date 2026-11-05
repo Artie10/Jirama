@@ -163,3 +163,8 @@ Route::post('admin/login', [AdminAuthController::class, 'login'])
 Route::view('tableauxDeBordAdmin', 'tableauxDeBordAdmin')
     ->middleware('auth:employe')
     ->name('admin.dashboard');
+
+//ROUTE DU TABLEAUX DE BORD ADMIN
+
+Route::get('/admin/dossiers', [DossierController::class, 'index'])
+    ->name('admin.dossiers.index');

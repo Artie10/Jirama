@@ -177,4 +177,48 @@ class DossierController extends Controller
 
                 return view('components.client.dashboard', compact('dossier', 'mesures'));
     }
+
+    //TRAITEMENT DOSSIER ADMIN
+
+      public function index(Request $request)
+    {
+        $query = dossier::query();
+
+        // Recherche par référence, nom ou commune
+        if ($request->filled('q')) {
+            $recherche = $request->input('q');
+
+            $query->where(function ($q) use ($recherche) {
+                $q->where('NumDossier', 'like', "%{$recherche}%")
+                    ->orWhere('Nom', 'like', "%{$recherche}%")
+                    ->orWhere('Mail', 'like', "%{$recherche}%");
+            });
+        }
+
+        // Filtrage selon le statut
+        if ($request->filled('statut')) {
+            $query->where('statut', $request->input('statut'));
+        }
+
+        $dossiers = $query
+            ->orderBy('created_at', 'asc')
+            ->paginate(10)
+            ->withQueryString();
+
+        $selectedDossier = $dossiers->first();
+
+        $waitingCount = dossier::count();
+
+        $urgentCount = dossier::where('statut', 'urgent')->count();
+
+        return view('tableauxDeBordAdmin', [
+            'dossiers' => $dossiers,
+            'selectedDossier' => $selectedDossier,
+            'userName' => 'Administrateur',
+            'userRole' => 'Pôle Raccordement',
+            'waitingCount' => $waitingCount,
+            'urgentCount' => $urgentCount,
+            'averageDelay' => 'Non calculé',
+        ]);
+    }
 }

@@ -1,53 +1,22 @@
-{{-- resources/views/components/volta/dossiers.blade.php --}}
-@props([
-    'userName' => 'Ing. Sarah Laurent',
-    'userRole' => 'Pôle Raccordement',
-    'waitingCount' => 7,
-    'urgentCount' => 2,
-    'averageDelay' => '3,8 j ouvrés',
-    'dossiers' => null,
-    'selectedDossier' => null,
-])
-
 @php
-    $dossiers = $dossiers ?? [
-        [
-            'reference' => 'RAC-2025-0842', 'priority' => 'Priorité J-4',
-            'name' => 'M. Marc DUPONT',
-            'address' => '14 Bis Chemin des Hautes Terres, 44240 La Chapelle-sur-Erdre',
-            'power' => '12 kVA Mono', 'type' => 'Type 2 (Long.)',
-            'date' => '18 Fév. 2025 à 09:14',
-            'delay' => 'Il y a 6j (Délai légal J-4)',
-            'status' => 'Étude terrain validée (38.5m) • Prêt pour instruction et devis',
-            'cadastre' => 'B-114', 'enedis' => 'AR-44-902', 'active' => true,
-        ],
-        [
-            'reference' => 'RAC-2025-0845', 'priority' => 'Échéance J-5',
-            'name' => 'Mme Valérie MOREAU',
-            'address' => '3 Rue des Chênes Verts, 44000 Nantes',
-            'power' => '36 kVA Tri', 'type' => 'Type 1 (Direct)',
-            'date' => '19 Fév. 2025 à 14:30', 'delay' => '',
-            'status' => 'Relevé terrain en attente', 'cadastre' => '', 'enedis' => '', 'active' => false,
-        ],
-        [
-            'reference' => 'RAC-2025-0849', 'priority' => 'Servitude requise',
-            'name' => 'SCI Les Oliviers (M. B. Lambert)',
-            'address' => "Parc d'Activité de l'Estuaire, Saint-Nazaire",
-            'power' => '18 kVA Tri', 'type' => 'Pro / Tertiaire',
-            'date' => '20 Fév. 2025 à 11:05', 'delay' => '',
-            'status' => 'Étude maître mesure déposée', 'cadastre' => '', 'enedis' => '', 'active' => false,
-        ],
-        [
-            'reference' => 'RAC-2025-0852', 'priority' => 'Conforme',
-            'name' => 'M. Thomas LECLERC',
-            'address' => '8 Impasse des Marais, 44300 Nantes',
-            'power' => '9 kVA Mono', 'type' => 'Résidentiel individuel',
-            'date' => '21 Fév. 2025 à 16:45', 'delay' => '',
-            'status' => 'Dossier complet • En file', 'cadastre' => '', 'enedis' => '', 'active' => false,
-        ],
-    ];
+    $dossiers = $dossiers->map(function ($dossier) {
+        return [
+    'reference' => $dossier->NumDossier,
+    'priority' => 'À définir',
+    'name' => $dossier->Nom,
+    'address' => 'Adresse non renseignée',
+    'power' => 'À déterminer',
+    'type' => 'À déterminer',
+    'date' => $dossier->created_at?->format('d/m/Y H:i'),
+    'delay' => '',
+    'status' => $dossier->statut,
+    'cadastre' => '',
+    'enedis' => '',
+    'active' => false,
+];
+    });
 
-    $selectedDossier = $selectedDossier ?? $dossiers[0];
+    $selectedDossier = $dossiers->first();
 @endphp
 
 @once
