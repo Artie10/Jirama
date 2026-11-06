@@ -61,9 +61,6 @@ Route::post('/logout', function (Request $request) {
 Route::view('/','LoginClient')->name('TraitementDossierA');
 
 
-Route::fallback(function(){
-    return 'Une erreur est survenue';
-});
 
 //CHARGEMENT Dashboard et chargement mesure
 Route::get('/client/dashboard', function (Request $request) {
@@ -148,23 +145,22 @@ Route::get('/nouvelle-demande', function () {
 })->name('demande.create');
 
 // APRES CONNEX PAGE ADMIN
-Route::view('tableauxDeBordAdmin', 'tableauxDeBordAdmin')
-    ->middleware('auth:employe')
-    ->name('admin.dashboard');
 
-Route::view('pageLoginAdmin', 'pageLoginAdmin')
+Route::view('/pageLoginAdmin', 'pageLoginAdmin')
     ->middleware('guest:employe')
     ->name('admin.login');
 
-Route::post('admin/login', [AdminAuthController::class, 'login'])
+// TRAITEMENT DE LA CONNEXION
+Route::post('/admin/login', [AdminAuthController::class, 'login'])
     ->middleware('guest:employe')
     ->name('admin.login.submit');
 
-Route::view('tableauxDeBordAdmin', 'tableauxDeBordAdmin')
+// TABLEAU DE BORD ADMIN
+Route::get('/tableauxDeBordAdmin', [DossierController::class, 'index'])
     ->middleware('auth:employe')
     ->name('admin.dashboard');
 
-//ROUTE DU TABLEAUX DE BORD ADMIN
-
+// GESTION DES DOSSIERS
 Route::get('/admin/dossiers', [DossierController::class, 'index'])
+    ->middleware('auth:employe')
     ->name('admin.dossiers.index');
