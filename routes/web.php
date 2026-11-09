@@ -33,9 +33,20 @@ Route::get('/nouvelle-demande', function () {
 })->name('demande.create');
 
 // Espace technicien
-Route::get('/technicien', function () {
-    return view('welcome');
-})->name('technicien');
+
+Route::get('/technicien', function (Request $request) {
+
+    $employe = Auth::guard('employe')->user();
+
+    // Vérifier le rôle
+    abort_unless(
+        $employe->role === 'MAITRE_MESURE',
+        403
+    );
+
+    return view('EtudeTerrain', compact('employe'));
+
+})->middleware('auth:employe')->name('technicien');
 
 // Devis et dossiers
 Route::get('/devis', function () {
@@ -54,11 +65,11 @@ Route::post('/logout', function (Request $request) {
     $request->session()->invalidate();
     $request->session()->regenerateToken();
 
-    return redirect()->route('TraitementDossierA');
+    return redirect()->route('LoginClient');
 
 })->name('logout');
 
-Route::view('/','LoginClient')->name('TraitementDossierA');
+Route::view('/','LoginClient')->name('LoginClient');
 
 
 
@@ -159,8 +170,13 @@ Route::post('/admin/login', [AdminAuthController::class, 'login'])
 Route::get('/tableauxDeBordAdmin', [DossierController::class, 'index'])
     ->middleware('auth:employe')
     ->name('admin.dashboard');
+// Tableau de bord maître mesure
+Route::view('/EtudeTerrain', 'EtudeTerrain')
+    ->middleware('auth:employe')
+    ->name('maitre.dashboard');
 
 // GESTION DES DOSSIERS
 Route::get('/admin/dossiers', [DossierController::class, 'index'])
     ->middleware('auth:employe')
     ->name('admin.dossiers.index');
+
