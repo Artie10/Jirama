@@ -1,6 +1,6 @@
 {{-- resources/views/components/demande-raccordement.blade.php --}}
 @props([
-    'action' => route('TraitementDossierA'),
+    'action' => route('demande.store'),
     'nom' => old('nom', 'RAKOTO'),
     'prenom' => old('prenom', 'Jean Michel'),
     'cin' => old('cin', '101245789630'),

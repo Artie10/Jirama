@@ -29,9 +29,9 @@
         </a>
 
         <a href="{{ route('technicien') }}"
-           class="nav-item {{ request()->routeIs('technicien') ? 'active' : '' }}">
-            <span>Technicien terrain</span>
-        </a>
+   class="nav-item {{ request()->routeIs('technicien') ? 'active' : '' }}">
+    <span>Maître mesure</span>
+</a>
 
         <a href="{{ route('devis') }}"
            class="nav-item {{ request()->routeIs('devis') ? 'active' : '' }}">

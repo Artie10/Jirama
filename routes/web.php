@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\DossierController;
 use App\Http\Controllers\AdminAuthController;
 // Tableau de bord
-// Tableau de bord réel du client
+// Tableau de bord du client
 Route::get('/client/dashboard', function (Request $request) {
 
     $client = $request->user('client');
@@ -22,36 +22,79 @@ Route::get('/client/dashboard', function (Request $request) {
 
 })->middleware('auth:client')->name('client.dashboard');
 
-// Suivi
+// SUIVI DU DOSSIER
 Route::get('/suivi', function () {
-    return view('welcome');
+
+    if (!Auth::guard('client')->check()) {
+        return redirect()->route('LoginClient');
+    }
+
+    $client = Auth::guard('client')->user();
+
+    return view('components.client.dashboard', compact('client'));
+
 })->name('suivi');
 
-// Nouvelle demande
+
+// NOUVELLE DEMANDE
 Route::get('/nouvelle-demande', function () {
-    return view('welcome');
+
+    if (!Auth::guard('client')->check()) {
+        return redirect()->route('LoginClient');
+    }
+
+    $client = Auth::guard('client')->user();
+
+    return view('components.client.dashboard', compact('client'));
+
 })->name('demande.create');
 
-// Espace technicien
 
-Route::get('/technicien', function (Request $request) {
+// MES DEVIS ET DOSSIERS
+Route::get('/devis', function () {
 
+    if (!Auth::guard('client')->check()) {
+        return redirect()->route('LoginClient');
+    }
+
+    $client = Auth::guard('client')->user();
+
+    return view('components.client.dashboard', compact('client'));
+
+})->name('devis');
+
+
+
+
+
+
+
+// ESPACE TECHNICIEN TERRAIN
+Route::get('/technicien', function () {
+
+    // Vérifier que le client est connecté
+    if (!Auth::guard('client')->check()) {
+        return redirect()->route('LoginClient');
+    }
+
+    // Récupérer le client connecté
+    $client = Auth::guard('client')->user();
+
+    // Vérifier si un employé est connecté
     $employe = Auth::guard('employe')->user();
 
-    // Vérifier le rôle
-    abort_unless(
-        $employe->role === 'MAITRE_MESURE',
-        403
-    );
+    // Si un employé est connecté, vérifier son rôle
+    if ($employe && $employe->role !== 'MAITRE_MESURE') {
+        abort(403, 'Accès réservé au maître mesure.');
+    }
 
-    return view('EtudeTerrain', compact('employe'));
+    // Afficher la page principale du client
+    return view('components.client.dashboard', compact('client'));
 
-})->middleware('auth:employe')->name('technicien');
+})->name('technicien');
 
-// Devis et dossiers
-Route::get('/devis', function () {
-    return view('welcome');
-})->name('devis');
+
+
 
 //CONNIXION
 Route::post('/client/login', [ClientAuthController::class, 'login'])
@@ -170,10 +213,6 @@ Route::post('/admin/login', [AdminAuthController::class, 'login'])
 Route::get('/tableauxDeBordAdmin', [DossierController::class, 'index'])
     ->middleware('auth:employe')
     ->name('admin.dashboard');
-// Tableau de bord maître mesure
-Route::view('/EtudeTerrain', 'EtudeTerrain')
-    ->middleware('auth:employe')
-    ->name('maitre.dashboard');
 
 // GESTION DES DOSSIERS
 Route::get('/admin/dossiers', [DossierController::class, 'index'])

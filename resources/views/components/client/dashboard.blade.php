@@ -17,21 +17,46 @@
     {{-- Navbar principale --}}
     <x-client.BarNavC :dossier="$client" />
 
-    <main>
+<main>
 
-        @if (request()->routeIs('technicien'))
+    {{-- SUIVI DU DOSSIER --}}
+    @if (request()->routeIs('suivi', 'client.dashboard'))
 
-            {{-- Tableau de bord étude sur terrain --}}
+        <x-client.ContentSuivi :dossier="$client" />
+
+
+    {{-- NOUVELLE DEMANDE --}}
+    @elseif (request()->routeIs('demande.create'))
+
+        {{-- Nous intégrerons ici ton composant de nouvelle demande --}}
+        <x-client.DemandeRaccordement />
+
+
+    {{-- TECHNICIEN TERRAIN --}}
+    @elseif (request()->routeIs('technicien'))
+
+        @if (Auth::guard('employe')->check()
+            && Auth::guard('employe')->user()->role === 'MAITRE_MESURE')
+
             <x-Mesure.EtudeTerrain />
 
         @else
 
-            {{-- Suivi du dossier client --}}
-            <x-client.ContentSuivi :dossier="$client" />
+            <x-Admin.LoginAdmin
+                action="{{ route('admin.login.submit') }}"
+            />
 
         @endif
 
-    </main>
+
+    {{-- MES DEVIS --}}
+    @elseif (request()->routeIs('devis'))
+
+        {{-- Nous intégrerons ici ton composant de devis --}}
+
+    @endif
+
+</main>
 
 </body>
 </html>
