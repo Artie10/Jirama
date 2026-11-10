@@ -9,22 +9,36 @@
     depuis ton contrôleur et définis `action` pour poster vers ton backend.
 --}}
 @props([
-     'action' => route('etude.store'),
+    'action' => route('etude.store'),
     'method' => 'POST',
-    'demandeur' => 'Marc Deval',
-    'tension' => 'BT 230V',
-    'longueur' => 38.5,
-    'distancePrivee' => 26.0,
-    'distancePublique' => 12.5,
-    'chute' => 1.42,
-    'seuilChute' => 2,
-    'cheminement' => 'Souterrain',
-    'parcelle' => 'B-114',
-    'proprietaire' => 'Consorts Vernet',
-    'servitude' => true,
-    'prerequisCompletes' => true,
-    'horodatage' => 'Aujourd’hui à 11:30',
 
+    // Informations du dossier
+    'demandeur' => null,
+    'tension' => null,
+
+    // Informations de mesure
+    'longueur' => null,
+    'cheminement' => null,
+
+    // Informations de localisation
+    'latitude' => null,
+    'longitude' => null,
+    'adresse_localisation' => null,
+
+    // Autorisation
+    'autorisation' => null,
+
+    // Informations cadastrales (à connecter ultérieurement)
+    'parcelle' => null,
+    'proprietaire' => null,
+
+    // Informations complémentaires non encore enregistrées
+    'distancePrivee' => null,
+    'distancePublique' => null,
+    'chute' => null,
+    'seuilChute' => 2,
+    'prerequisCompletes' => true,
+    'horodatage' => null,
 ])
 
 @once
@@ -36,37 +50,68 @@
 @endonce
 
 @php
-    $simulation = $action === '#';
+    // Le formulaire est maintenant connecté au vrai backend
+    $simulation = false;
 
-    $longueurValeur = old('longueur', $longueur);
-    $longueurNum = is_numeric($longueurValeur) ? (float) $longueurValeur : 0.0;
-    $longueurAffichee = is_numeric($longueurValeur)
-        ? number_format((float) $longueurValeur, 1, ',', '')
-        : $longueurValeur;
+    $longueurValeur = old('longueur', $longueur ?? '');
 
-    $servitudeActive = old('servitude', $servitude ? '1' : '0') === '1';
+    $longueurNum = is_numeric($longueurValeur)
+        ? (float) $longueurValeur
+        : 0.0;
 
-    $totalTranchee = max($distancePrivee + $distancePublique, 0.0001);
-    $pctPublic = round($distancePublique / $totalTranchee * 100, 1);
+    $autorisationValeur = old(
+        'autorisation',
+        $autorisation ?? ''
+    );
+
+    $distancePriveeValeur = $distancePrivee ?? 0;
+    $distancePubliqueValeur = $distancePublique ?? 0;
+
+    $totalTranchee = max(
+        $distancePriveeValeur + $distancePubliqueValeur,
+        0.0001
+    );
+
+    $pctPublic = round(
+        $distancePubliqueValeur / $totalTranchee * 100,
+        1
+    );
+
     $pctPrive = round(100 - $pctPublic, 1);
 
     $seuilLinky = 30;
 @endphp
 
 <div class="et">
-    @if ($simulation)
-        <p class="et-simulation">
-            <strong>Mode conception :</strong> les données affichées sont fictives. Le bouton simule l’action ; rien n’est enregistré.
-        </p>
-    @endif
 
-    <form class="et-formulaire" action="{{ $action }}" method="{{ $method === 'GET' ? 'GET' : 'POST' }}" data-simulation="{{ $simulation ? '1' : '0' }}" data-seuil="{{ $seuilLinky }}" novalidate>
-        @unless ($method === 'GET')
+
+   <form
+    class="et-formulaire"
+    action="{{ $action }}"
+    method="POST"
+    data-simulation="0"
+    data-seuil="{{ $seuilLinky }}"
+    novalidate
+>
+
             @csrf
+            @if (session('success'))
+    <p class="et-statut et-statut--ok">
+        {{ session('success') }}
+    </p>
+@endif
+
+@if ($errors->any())
+    <div class="et-erreurs">
+        @foreach ($errors->all() as $error)
+            <p class="et-erreur">{{ $error }}</p>
+        @endforeach
+    </div>
+@endif
             @if (! in_array($method, ['GET', 'POST']))
                 @method($method)
             @endif
-        @endunless
+
 
         <input type="hidden" name="cheminement" value="{{ strtolower($cheminement) }}">
 
@@ -97,17 +142,19 @@
                         <label class="et-sr-only" for="etLongueur">Longueur mesurée en mètres</label>
                         <div class="et-releve-saisie">
                             <div class="et-saisie @error('longueur') et-saisie--erreur @enderror">
-                                <input
-                                    class="et-input-longueur"
-                                    type="integer"
-                                    id="etLongueur"
-                                    name="longueur"
-                                    value="{{ $longueurAffichee }}"
-                                    inputmode="decimal"
-                                    autocomplete="off"
-                                    placeholder="0,0"
-                                    required
-                                >
+                               <input
+    class="et-input-longueur"
+    type="number"
+    id="etLongueur"
+    name="longueur"
+    value="{{ $longueurValeur }}"
+    step="0.01"
+    min="0.01"
+    inputmode="decimal"
+    autocomplete="off"
+    placeholder="0.0"
+    required
+>
                                 <span class="et-unite">mètres</span>
                             </div>
                             <button class="et-modifiable" type="button" data-focus="#etLongueur">
@@ -210,7 +257,11 @@
 </section>
 
                 <form action="">
-                    <x-Mesure.localisation-picker />
+                   <x-Mesure.localisation-picker
+    :latitude="$latitude"
+    :longitude="$longitude"
+    :adresse="$adresse_localisation"
+/>
                 </form>
             </div>
 
@@ -236,7 +287,7 @@
                         <p class="et-validation-sous">Horodatage d’achèvement estimé : {{ $horodatage }}</p>
                     </div>
 
-                    <button class="et-bouton" type="submit" @disabled(! $prerequisCompletes)>
+                    <button class="et-bouton" type="submit">
                         <span class="material-symbols-outlined et-bouton-icone">assignment_turned_in</span>
                         <span class="et-bouton-texte">Valider l’étude terrain et synchroniser le dossier</span>
                     </button>
