@@ -37,6 +37,7 @@ Route::get('/suivi', function () {
 
 
 // NOUVELLE DEMANDE
+// NOUVELLE DEMANDE
 Route::get('/nouvelle-demande', function () {
 
     if (!Auth::guard('client')->check()) {
@@ -48,7 +49,6 @@ Route::get('/nouvelle-demande', function () {
     return view('components.client.dashboard', compact('client'));
 
 })->name('demande.create');
-
 
 // MES DEVIS ET DOSSIERS
 Route::get('/devis', function () {

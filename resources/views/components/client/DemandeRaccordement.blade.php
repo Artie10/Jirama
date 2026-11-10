@@ -7,28 +7,9 @@
     'telephone' => old('telephone', '+261 34 12 345 67'),
     'email' => old('email', 'jean.rakoto@example.com'),
 ])
-
-<link rel="stylesheet" href="{{ asset('css/demande-raccordement.css') }}">
-
+<link rel="stylesheet" href="{{ asset('css/DemandeRaccordement.css') }}">
 <div class="vr-page">
-    <header class="vr-header">
-        <a class="vr-brand" href="{{ url('/') }}" aria-label="Accueil VoltaRéseau">
-            <span class="vr-brand-mark">V</span>
-            <span>VoltaRéseau</span>
-        </a>
 
-        <nav class="vr-public-nav" aria-label="Navigation principale">
-            <a href="#">Démarches &amp; Barèmes</a>
-            <a href="#">Simulateur de devis</a>
-            <a href="#">Installateurs agréés</a>
-            <a href="#">Documentation</a>
-        </nav>
-
-        <div class="vr-user">
-            <span class="vr-avatar">ML</span>
-            <span><strong>Mon espace</strong><small>Demandeur</small></span>
-        </div>
-    </header>
 
     <section class="vr-hero">
         <div class="vr-hero-inner">

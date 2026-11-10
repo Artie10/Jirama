@@ -1,0 +1,163 @@
+/* public/css/LocalisationPicker.css */
+.loc-recherche {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.loc-champ {
+    flex: 1 1 220px;
+    min-width: 0;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font: inherit;
+    font-size: 14px;
+}
+
+.loc-champ:focus {
+    outline: 2px solid #f97316;
+    outline-offset: 1px;
+    border-color: #f97316;
+}
+
+.loc-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 8px;
+    background: #f97316;
+    color: #fff;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.loc-btn:hover {
+    background: #ea580c;
+}
+
+.loc-btn--sec {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.loc-btn--sec:hover {
+    background: #e5e7eb;
+}
+
+.loc-btn .material-symbols-outlined,
+.loc-lien .material-symbols-outlined {
+    font-size: 18px;
+}
+
+.loc-carte {
+    height: 320px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    z-index: 0;
+}
+
+.loc-aide {
+    margin: 6px 0 0;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.loc-infos {
+    margin-top: 12px;
+}
+
+.loc-adresse {
+    margin: 0 0 4px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.loc-coord {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    font-size: 13px;
+    color: #4b5563;
+    font-variant-numeric: tabular-nums;
+}
+
+.loc-lien {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.loc-lien:hover {
+    text-decoration: underline;
+}
+
+.loc-effacer {
+    border: 0;
+    background: none;
+    color: #dc2626;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.loc-statut {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: #374151;
+}
+.loc-statut--erreur {
+    color: #dc2626;
+}
+
+@media (max-width: 600px) {
+    .loc-carte {
+        height: 260px;
+    }
+    .loc-btn {
+        flex: 1 1 auto;
+        justify-content: center;
+    }
+}
+
+/* Bouton « Ajouter une localisation » */
+.loc-ajouter {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 16px;
+    margin-bottom: 12px;
+    border: 2px dashed #f97316;
+    border-radius: 10px;
+    background: #fff7ed;
+    color: #c2410c;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.loc-ajouter:hover {
+    background: #ffedd5;
+}
+.loc-ajouter[aria-expanded="true"] {
+    border-style: solid;
+}
+.loc-ajouter .material-symbols-outlined {
+    font-size: 20px;
+}
+
+/* L'attribut hidden doit gagner sur display:inline-flex */
+.loc-lien[hidden] {
+    display: none;
+}

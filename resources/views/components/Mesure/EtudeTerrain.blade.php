@@ -188,9 +188,12 @@
                         <p class="et-erreur">{{ $message }}</p>
                     @enderror
                 </section>
+                <form action="">
+                    <x-Mesure.localisation-picker />
+                </form>
             </div>
 
-            {{-- ===================== COLONNE DROITE ===================== --}}
+
             <div class="et-col">
 
                 <aside class="et-info">

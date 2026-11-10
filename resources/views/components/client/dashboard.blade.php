@@ -7,10 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <title>Mon espace | VoltaRéseau</title>
-
+    <link rel="stylesheet" href="{{ asset('css/DemandeRaccordement.css') }}">
     <link rel="stylesheet" href="{{ asset('css/NavClient.css') }}">
     <link rel="stylesheet" href="{{ asset('css/ContentSuivi.css') }}">
     <link rel="stylesheet" href="{{ asset('css/conteneurSuivi.css') }}">
+
+
 </head>
 <body>
 
@@ -24,13 +26,10 @@
 
         <x-client.ContentSuivi :dossier="$client" />
 
-
     {{-- NOUVELLE DEMANDE --}}
     @elseif (request()->routeIs('demande.create'))
 
-        {{-- Nous intégrerons ici ton composant de nouvelle demande --}}
         <x-client.DemandeRaccordement />
-
 
     {{-- TECHNICIEN TERRAIN --}}
     @elseif (request()->routeIs('technicien'))
@@ -48,15 +47,15 @@
 
         @endif
 
-
-    {{-- MES DEVIS --}}
+    {{-- DEVIS --}}
     @elseif (request()->routeIs('devis'))
 
-        {{-- Nous intégrerons ici ton composant de devis --}}
+        {{-- Contenu des devis à intégrer ultérieurement --}}
 
     @endif
 
 </main>
 
 </body>
+
 </html>
