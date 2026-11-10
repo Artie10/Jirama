@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Dossier;
 
 class Mesure extends Model
 {
@@ -15,10 +14,16 @@ class Mesure extends Model
         'autorisation',
         'date',
         'longueur',
+        'latitude',
+        'longitude',
+        'adresse_localisation',
     ];
 
     protected $casts = [
         'date' => 'date',
+        'longueur' => 'decimal:2',
+        'latitude' => 'decimal:7',
+        'longitude' => 'decimal:7',
     ];
 
     public function dossier()

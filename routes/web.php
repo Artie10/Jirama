@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\DossierController;
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\EtudeTerrainController;
 // Tableau de bord
 // Tableau de bord du client
 Route::get('/client/dashboard', function (Request $request) {
@@ -219,3 +220,7 @@ Route::get('/admin/dossiers', [DossierController::class, 'index'])
     ->middleware('auth:employe')
     ->name('admin.dossiers.index');
 
+//Gestion mesures
+// ENREGISTREMENT DE L'ETUDE TERRAIN
+Route::post('/technicien/etude', [EtudeTerrainController::class, 'store'])
+    ->name('etude.store');

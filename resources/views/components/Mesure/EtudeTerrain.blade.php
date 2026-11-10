@@ -9,6 +9,8 @@
     depuis ton contrôleur et définis `action` pour poster vers ton backend.
 --}}
 @props([
+     'action' => route('etude.store'),
+    'method' => 'POST',
     'demandeur' => 'Marc Deval',
     'tension' => 'BT 230V',
     'longueur' => 38.5,
@@ -22,8 +24,7 @@
     'servitude' => true,
     'prerequisCompletes' => true,
     'horodatage' => 'Aujourd’hui à 11:30',
-    'action' => '#',
-    'method' => 'POST',
+
 ])
 
 @once
@@ -154,40 +155,60 @@
                 </section>
 
                 {{-- Autorisation de passage --}}
-                <section class="et-carte">
-                    <header class="et-carte-entete">
-                        <h2 class="et-carte-titre">
-                            <span class="material-symbols-outlined et-icone-orange">home_pin</span>
-                            Autorisation de passage requise
-                        </h2>
-                        <span class="et-badge et-badge--ambre">Servitude Tiers</span>
-                    </header>
 
-                    <p class="et-texte">
-                        Le tracé de tranchée le plus court emprunte le chemin d’accès privatif cadastré
-                        <strong>{{ $parcelle }}</strong> ({{ $proprietaire }}). Une convention de servitude ou accord manuscrit
-                        est requis pour la pose du raccordement en domaine tiers.
-                    </p>
+<section class="et-carte">
+    <header class="et-carte-entete">
+        <h2 class="et-carte-titre">
+            <span class="material-symbols-outlined et-icone-orange">home_pin</span>
+            Autorisation de passage requise
+        </h2>
+        <span class="et-badge et-badge--ambre">Servitude Tiers</span>
+    </header>
 
-                    <fieldset class="et-servitude">
-                        <legend class="et-sr-only">Servitude nécessaire sur {{ $parcelle }}</legend>
-                        <div class="et-servitude-texte">
-                            <p class="et-servitude-titre">Servitude nécessaire sur {{ $parcelle }}</p>
-                            <p class="et-servitude-sous">Active l’obligation de pièce jointe contractuelle</p>
-                        </div>
+    <p class="et-texte">
+        Le tracé de tranchée le plus court emprunte le chemin d’accès privatif cadastré
+        <strong>{{ $parcelle }}</strong> ({{ $proprietaire }}). Une convention de servitude ou accord manuscrit
+        est requis pour la pose du raccordement en domaine tiers.
+    </p>
 
-                        <div class="et-bascule">
-                            <input class="et-radio" type="radio" id="etServNon" name="servitude" value="0" @checked(! $servitudeActive)>
-                            <label class="et-bascule-label" for="etServNon">NON</label>
+    <fieldset class="et-servitude">
+        <legend class="et-sr-only">Servitude nécessaire sur {{ $parcelle }}</legend>
 
-                            <input class="et-radio" type="radio" id="etServOui" name="servitude" value="1" @checked($servitudeActive)>
-                            <label class="et-bascule-label" for="etServOui">OUI</label>
-                        </div>
-                    </fieldset>
-                    @error('servitude')
-                        <p class="et-erreur">{{ $message }}</p>
-                    @enderror
-                </section>
+        <div class="et-servitude-texte">
+            <p class="et-servitude-titre">Servitude nécessaire sur {{ $parcelle }}</p>
+            <p class="et-servitude-sous">Active l’obligation de pièce jointe contractuelle</p>
+        </div>
+
+        <div class="et-bascule">
+            <input
+                class="et-radio"
+                type="radio"
+                id="etServNon"
+                name="autorisation"
+                value="Non"
+                required
+                @checked(old('autorisation', $autorisation ?? '') === 'Non')
+            >
+            <label class="et-bascule-label" for="etServNon">NON</label>
+
+            <input
+                class="et-radio"
+                type="radio"
+                id="etServOui"
+                name="autorisation"
+                value="Oui"
+                required
+                @checked(old('autorisation', $autorisation ?? '') === 'Oui')
+            >
+            <label class="et-bascule-label" for="etServOui">OUI</label>
+        </div>
+    </fieldset>
+
+    @error('autorisation')
+        <p class="et-erreur">{{ $message }}</p>
+    @enderror
+</section>
+
                 <form action="">
                     <x-Mesure.localisation-picker />
                 </form>

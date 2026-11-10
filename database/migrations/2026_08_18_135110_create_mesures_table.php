@@ -11,17 +11,28 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mesures', function (Blueprint $table) {
-            $table->id();
-            $table->string('NumMesure',)->unique();
-            $table->foreignId('NumDossier')->constrained('dossiers')->onDelete('cascade');
-            $table->string('autorisation');
-            $table->date('date');
-            $table->integer('longueur');
+       Schema::create('mesures', function (Blueprint $table) {
+    $table->id();
 
+    $table->string('NumMesure')->unique();
 
-            $table->timestamps();
-        });
+    $table->string('NumDossier');
+
+    $table->foreign('NumDossier')
+        ->references('NumDossier')
+        ->on('dossiers')
+        ->onDelete('cascade');
+
+    $table->string('autorisation');
+    $table->date('date');
+    $table->decimal('longueur', 8, 2);
+
+    $table->decimal('latitude', 10, 7)->nullable();
+    $table->decimal('longitude', 10, 7)->nullable();
+    $table->text('adresse_localisation')->nullable();
+
+    $table->timestamps();
+});
     }
 
     /**
