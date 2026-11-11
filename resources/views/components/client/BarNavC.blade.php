@@ -1,6 +1,8 @@
 
 @props(['dossier'])
-
+@php
+    $client = Auth::guard('client')->user();
+@endphp
 <nav class="dashboard-navbar" id="dashboardNavbar">
 
     {{-- Bouton burger --}}
@@ -57,10 +59,11 @@
         </div>
 
         {{-- Avatar --}}
-        <img src="{{ asset('photos/Dossier.png') }}"
-             alt="Photo du client"
-             class="user-avatar">
-
+       <img src="{{ $client->photo_identite
+        ? asset('storage/' . $client->photo_identite)
+        : asset('photos/Dossier.png') }}"
+     alt="Photo du client"
+     class="user-avatar">
         {{-- Déconnexion --}}
         <form action="{{ route('logout') }}" method="POST">
             @csrf
