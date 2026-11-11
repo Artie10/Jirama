@@ -80,6 +80,14 @@
     $pctPrive = round(100 - $pctPublic, 1);
 
     $seuilLinky = 30;
+        // État du bouton selon la réponse du backend
+    $messageSucces = session('success');
+    $aDesErreurs = $errors->any();
+
+    $classeBouton = $messageSucces ? 'et-bouton--ok' : ($aDesErreurs ? 'et-bouton--erreur' : '');
+    $iconeBouton = $messageSucces ? 'check_circle' : ($aDesErreurs ? 'error' : 'assignment_turned_in');
+    $texteBouton = $messageSucces
+        ?: ($aDesErreurs ? 'Validation impossible : corrige les erreurs et réessaie' : 'Valider l’étude terrain et synchroniser le dossier');
 @endphp
 
 <div class="et">
@@ -287,7 +295,15 @@
                         <p class="et-validation-sous">Horodatage d’achèvement estimé : {{ $horodatage }}</p>
                     </div>
 
-                    <button class="et-bouton" type="submit">
+                    <button
+    class="et-bouton {{ $classeBouton }}"
+    type="submit"
+    data-texte-defaut="Valider l’étude terrain et synchroniser le dossier"
+    data-icone-defaut="assignment_turned_in"
+>
+    <span class="material-symbols-outlined et-bouton-icone">{{ $iconeBouton }}</span>
+    <span class="et-bouton-texte">{{ $texteBouton }}</span>
+</button>
                         <span class="material-symbols-outlined et-bouton-icone">assignment_turned_in</span>
                         <span class="et-bouton-texte">Valider l’étude terrain et synchroniser le dossier</span>
                     </button>
@@ -302,6 +318,36 @@
 @once
     <script>
         (function () {
+            function elementsBouton(form) {
+                return {
+                    bouton: form.querySelector('.et-bouton'),
+                    texte: form.querySelector('.et-bouton-texte'),
+                    icone: form.querySelector('.et-bouton-icone')
+                };
+            }
+
+            // Clic : le bouton tourne
+            function etatEnvoi(form) {
+                var b = elementsBouton(form);
+                b.bouton.classList.remove('et-bouton--ok', 'et-bouton--erreur');
+                b.bouton.classList.add('et-bouton--envoi');
+                b.bouton.setAttribute('aria-busy', 'true');
+                b.icone.textContent = 'refresh';
+                b.texte.textContent = 'Transmission à l’instructeur…';
+            }
+
+            // Retour au bouton normal
+            function etatRepos(form) {
+                var b = elementsBouton(form);
+                if (!b.bouton) return;
+                b.bouton.classList.remove('et-bouton--envoi', 'et-bouton--ok', 'et-bouton--erreur');
+                b.bouton.removeAttribute('aria-busy');
+                b.bouton.disabled = false;
+                b.icone.textContent = b.bouton.dataset.iconeDefaut;
+                b.texte.textContent = b.bouton.dataset.texteDefaut;
+                form.dataset.envoi = '0';
+            }
+
             // Bouton « Modifiable » : met le focus sur le champ
             document.addEventListener('click', function (e) {
                 var btn = e.target.closest('.et-modifiable');
@@ -323,10 +369,16 @@
                 court.hidden = depasse;
             });
 
-            // Soumission : normalise la virgule, valide, puis simule si pas de backend
+            // Soumission
             document.addEventListener('submit', function (e) {
                 var form = e.target.closest('.et-formulaire');
                 if (!form) return;
+
+                // Anti double envoi
+                if (form.dataset.envoi === '1') {
+                    e.preventDefault();
+                    return;
+                }
 
                 var input = form.querySelector('[name="longueur"]');
                 var statut = form.querySelector('.et-statut');
@@ -341,41 +393,18 @@
                     return;
                 }
 
-                // Le backend reçoit un nombre avec un point décimal
-                input.value = String(valeur);
-
-                if (form.dataset.simulation !== '1') return;
-                e.preventDefault();
-                input.value = valeur.toFixed(1).replace('.', ',');
-
-                var bouton = form.querySelector('.et-bouton');
-                var texte = form.querySelector('.et-bouton-texte');
-                var icone = form.querySelector('.et-bouton-icone');
-                var texteInitial = texte.textContent;
-                var iconeInitiale = icone.textContent;
-
-                bouton.disabled = true;
-                bouton.classList.add('et-bouton--envoi');
-                icone.textContent = 'refresh';
-                texte.textContent = 'Transmission à l’instructeur…';
                 statut.hidden = true;
+                input.value = String(valeur); // point décimal pour le backend
 
-                setTimeout(function () {
-                    bouton.classList.remove('et-bouton--envoi');
-                    bouton.classList.add('et-bouton--ok');
-                    icone.textContent = 'check_circle';
-                    texte.textContent = 'Étude terrain transmise';
-                    statut.hidden = false;
-                    statut.className = 'et-statut et-statut--ok';
-                    statut.textContent = 'Simulation : longueur de ' + input.value + ' m enregistrée (données fictives).';
+                form.dataset.envoi = '1';
+                etatEnvoi(form);
+                // La page se recharge : Blade affiche ensuite le message de retour dans le bouton
+            });
 
-                    setTimeout(function () {
-                        bouton.disabled = false;
-                        bouton.classList.remove('et-bouton--ok');
-                        icone.textContent = iconeInitiale;
-                        texte.textContent = texteInitial;
-                    }, 3000);
-                }, 1200);
+            // Retour arrière du navigateur : on réinitialise le bouton
+            window.addEventListener('pageshow', function (e) {
+                if (!e.persisted) return;
+                document.querySelectorAll('.et-formulaire').forEach(etatRepos);
             });
         })();
     </script>

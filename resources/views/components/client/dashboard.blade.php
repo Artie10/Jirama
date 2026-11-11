@@ -42,8 +42,9 @@
         @else
 
             <x-Admin.LoginAdmin
-                action="{{ route('admin.login.submit') }}"
-            />
+    action="{{ route('admin.login.submit') }}"
+    contexte="technicien"
+/>
 
         @endif
 

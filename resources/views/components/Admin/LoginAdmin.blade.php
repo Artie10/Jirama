@@ -2,6 +2,7 @@
 
 @props([
     'action' => route('admin.login.submit'),
+    'contexte' => null,
 ])
 
 <link rel="stylesheet" href="{{ asset('css/loginAdmin.css') }}">
@@ -51,7 +52,9 @@
 
             <form method="POST" action="{{ $action }}">
                 @csrf
-
+@if ($contexte)
+    <input type="hidden" name="contexte" value="{{ $contexte }}">
+@endif
                 <div class="form-group">
                     <label for="email">Adresse e-mail professionnelle</label>
                     <input

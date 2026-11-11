@@ -58,10 +58,10 @@ class EtudeTerrainController extends Controller
             ],
         ]);
 
-        // 4. Vérifier que les deux coordonnées sont fournies ensemble
+        // 4. Vérifier les coordonnées
         if (
-            ($request->filled('latitude') && ! $request->filled('longitude'))
-            || (! $request->filled('latitude') && $request->filled('longitude'))
+            ($request->filled('latitude') && !$request->filled('longitude'))
+            || (!$request->filled('latitude') && $request->filled('longitude'))
         ) {
             return back()
                 ->withErrors([
@@ -70,24 +70,34 @@ class EtudeTerrainController extends Controller
                 ->withInput();
         }
 
-        // 5. Générer un numéro de mesure unique
-        do {
-            $numMesure = 'MES-' . now()->format('Ymd') . '-' . Str::upper(Str::random(6));
-        } while (Mesure::where('NumMesure', $numMesure)->exists());
-
-        // 6. Enregistrer l'étude
-        Mesure::create([
-            'NumMesure' => $numMesure,
+        // 5. Rechercher une mesure pour ce dossier
+        $mesure = Mesure::firstOrNew([
             'NumDossier' => $client->NumDossier,
-            'autorisation' => $donnees['autorisation'],
-            'date' => now()->toDateString(),
-            'longueur' => $donnees['longueur'],
-            'latitude' => $donnees['latitude'] ?? null,
-            'longitude' => $donnees['longitude'] ?? null,
-            'adresse_localisation' => $donnees['adresse_localisation'] ?? null,
         ]);
 
-        // 7. Retourner sur l'étude terrain
+        // 6. Générer un numéro uniquement si c'est une nouvelle mesure
+        if (!$mesure->exists) {
+
+            do {
+                $numMesure = 'MES-' . now()->format('Ymd') . '-'
+                    . Str::upper(Str::random(6));
+
+            } while (Mesure::where('NumMesure', $numMesure)->exists());
+
+            $mesure->NumMesure = $numMesure;
+        }
+
+        // 7. Enregistrer ou modifier la mesure
+        $mesure->autorisation = $donnees['autorisation'];
+        $mesure->date = now()->toDateString();
+        $mesure->longueur = $donnees['longueur'];
+        $mesure->latitude = $donnees['latitude'] ?? null;
+        $mesure->longitude = $donnees['longitude'] ?? null;
+        $mesure->adresse_localisation = $donnees['adresse_localisation'] ?? null;
+
+        $mesure->save();
+
+        // 8. Retourner sur l'étude terrain
         return redirect()
             ->route('technicien')
             ->with('success', 'Étude terrain enregistrée avec succès.');
