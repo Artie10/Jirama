@@ -1,4 +1,6 @@
-@props(['dossier'])
+@props(['dossier',
+        'mesure' => null,
+])
 
 @php
     $dateDepot = $dossier->created_at
@@ -55,6 +57,8 @@
 
 
 {{-- Notification prioritaire --}}
+@if(isset($mesure) && $mesure?->autorisation === 'Oui')
+
 <div class="notification-prioritaire">
 
     <div class="notification-icone">
@@ -69,22 +73,19 @@
             </span>
 
             <span class="notification-date">
-                • Reçue hier à 16:42
+                • Autorisation nécessaire
             </span>
         </div>
 
         <h3>
             Autorisation de passage sur terrain privé requise
-            (Parcelle B-114)
         </h3>
 
         <p>
-            Suite au tracé technique effectué sur site le 24 février
-            par nos équipes, l'extension nécessite le franchissement
-            de la limite cadastrale voisine. Une convention manuscrite
-            signée avec le propriétaire riverain est obligatoire pour
-            finaliser le dimensionnement hydraulique et émettre votre
-            proposition technique et financière (PTF).
+            Suite au tracé technique effectué sur site, l'extension
+            nécessite le franchissement d'une propriété privée.
+            Une convention signée avec le propriétaire riverain
+            est obligatoire pour poursuivre le traitement de votre dossier.
         </p>
 
     </div>
@@ -107,6 +108,8 @@
     </div>
 
 </div>
+
+@endif
 {{-- Suivi --}}
 <div class="cycle-dossier">
 

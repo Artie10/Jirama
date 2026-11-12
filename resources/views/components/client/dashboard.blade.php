@@ -24,7 +24,10 @@
     {{-- SUIVI DU DOSSIER --}}
     @if (request()->routeIs('suivi', 'client.dashboard'))
 
-        <x-client.ContentSuivi :dossier="$client" />
+   <x-client.ContentSuivi
+    :dossier="$client"
+    :mesure="$mesure"
+/>
 
     {{-- NOUVELLE DEMANDE --}}
     @elseif (request()->routeIs('demande.create'))
