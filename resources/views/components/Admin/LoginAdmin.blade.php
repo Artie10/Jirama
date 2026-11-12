@@ -23,12 +23,33 @@
             </div>
 
             <div class="brand-message">
-                <h2>Suivi et traitement des dossiers de raccordement</h2>
-                <p>
-                    Instruisez les demandes, suivez leur avancement et coordonnez
-                    les interventions depuis un seul espace.
-                </p>
-            </div>
+    <div class="message-slides">
+
+        {{-- Texte 1 --}}
+        <div class="message-slide">
+            <h2>Suivi et traitement des dossiers de raccordement</h2>
+            <p>
+                Instruisez les demandes, suivez leur avancement et coordonnez
+                les interventions depuis un seul espace.
+            </p>
+        </div>
+
+        {{-- Texte 2 (maître de mesure) --}}
+        <div class="message-slide">
+            <h2>Relevés et contrôle des mesures</h2>
+            <p>
+                Enregistrez vos métrés, validez les données de mesure et
+                assurez la fiabilité des relevés avant l'instruction du dossier.
+            </p>
+        </div>
+
+    </div>
+
+    <div class="message-dots" aria-hidden="true">
+        <span></span>
+        <span></span>
+    </div>
+</div>
         </aside>
 
         {{-- Formulaire --}}
