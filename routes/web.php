@@ -335,3 +335,12 @@ Route::post('/technicien/etude', [
 ])
     ->middleware('auth:employe')
     ->name('etude.store');
+
+    // MODIFICATION D'UN DOCUMENT DU DOSSIER EXISTANT
+
+Route::post('/client/dossier/modification', [
+    DossierController::class,
+    'modifierDocument',
+])
+    ->middleware('auth:client')
+    ->name('dossier.modification');

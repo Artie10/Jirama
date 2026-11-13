@@ -328,11 +328,10 @@
     </div>
 
     {{-- Formulaire --}}
-    <form action="{{ route('devis') }}"
-          method="POST"
-          enctype="multipart/form-data"
-          id="formDepotDocument">
-
+    <form action="{{ route('dossier.modification') }}"
+      method="POST"
+      enctype="multipart/form-data"
+      id="formDepotDocument">
         @csrf
 
         <div class="depot-section-titre">
@@ -363,7 +362,7 @@
                        value="photos_terrain">
 
                 <span class="type-contenu">
-                    <strong>Photos du terrain / coffret / poteau</strong>
+                    <strong>Photos du terrain / coffret </strong>
                     <small>
                         Vues d'ensemble de la limite de propriété
                         et des abords techniques.
@@ -417,7 +416,7 @@
 
             <small id="depotNomFichier">
                 Doit comporter la signature du propriétaire de la parcelle
-                B-114 et la copie de la pièce d'identité afférente.
+                 et la copie de la pièce d'identité afférente.
             </small>
 
         </label>
@@ -494,9 +493,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-
-{{-- JOURNALDESUIVI --}}
-
 
 {{-- JOURNAL DES EVENEMENTS --}}
 <div class="journal-evenements">

@@ -9,9 +9,17 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-
+use App\Models\JournalEvenement;
 class DossierController extends Controller
 {
+
+
+
+/**
+ * Modifier un document du dossier existant du client.
+ */
+
+
     /**
  * Afficher le formulaire de nouvelle demande
  */
@@ -186,7 +194,95 @@ public function create()
 
                 return view('components.client.dashboard', compact('dossier', 'mesures'));
     }
+//MODIFIER DOCUMENT
+public function modifierDocument(Request $request)
+{
+    // 1. Récupérer le client connecté
+    $client = Auth::guard('client')->user();
 
+    abort_unless($client, 403);
+
+    // 2. Vérifier son adresse e-mail
+    if (!$client->hasVerifiedEmail()) {
+        return redirect()->route('verification.notice');
+    }
+
+    // 3. Valider le document envoyé
+    $validated = $request->validate([
+        'type_document' => [
+            'required',
+            Rule::in([
+                'autorisation_passage',
+                'photos_terrain',
+                'piece_identite',
+                'justificatif_domicile',
+            ]),
+        ],
+
+        'fichier' => [
+            'required',
+            'file',
+            'mimes:pdf,jpg,jpeg,png',
+            'max:15360',
+        ],
+    ]);
+
+    // 4. Associer chaque type à sa colonne existante
+    $colonnes = [
+        'autorisation_passage' => 'autorisation_img',
+        'photos_terrain' => 'photos_terrain',
+        'piece_identite' => 'cin_document',
+        'justificatif_domicile' => 'residence_img',
+    ];
+
+    $colonne = $colonnes[$validated['type_document']];
+
+    // 5. Conserver le chemin de l'ancien document
+    $ancienFichier = $client->{$colonne};
+
+    // 6. Stocker le nouveau document
+    $chemin = $request->file('fichier')->store(
+        'dossiers/' . $client->NumDossier,
+        'public'
+    );
+
+    try {
+        DB::transaction(function () use (
+            $client,
+            $colonne,
+            $chemin,
+            $validated
+        ) {
+            // Remplacer le document dans le dossier existant
+            $client->{$colonne} = $chemin;
+            $client->save();
+
+            // Ajouter une trace dans le journal
+            JournalEvenement::create([
+                'NumDossier' => $client->NumDossier,
+                'type' => 'validation',
+                'titre' => 'Modification d’un document du dossier',
+                'description' => 'Le client a déposé un nouveau document (' .
+                    $validated['type_document'] .
+                    '). Ce document est en attente de vérification.',
+                'acteur' => $client->Nom,
+            ]);
+        });
+    } catch (\Throwable $e) {
+        Storage::disk('public')->delete($chemin);
+
+        throw $e;
+    }
+
+    // 7. Supprimer l'ancien fichier après la mise à jour réussie
+    if ($ancienFichier && $ancienFichier !== $chemin) {
+        Storage::disk('public')->delete($ancienFichier);
+    }
+
+    return redirect()
+        ->route('devis')
+        ->with('success', 'Votre document a été remplacé avec succès.');
+}
     //TRAITEMENT DOSSIER ADMIN
 
       public function index(Request $request)

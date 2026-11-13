@@ -31,6 +31,7 @@ class Dossier extends Authenticatable implements MustVerifyEmailContract
         'photo_identite',
         'cin_document',
         'statut_demandeur',
+        'photos_terrain',
     ];
 
     protected $hidden = [
