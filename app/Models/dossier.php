@@ -71,4 +71,14 @@ class Dossier extends Authenticatable implements MustVerifyEmailContract
             'NumDossier'
         );
     }
+
+    // Relation : un dossier peut avoir plusieurs événements dans le journal
+    public function evenements()
+{
+    return $this->hasMany(
+        \App\Models\JournalEvenement::class,
+        'NumDossier',
+        'NumDossier'
+    );
+}
 }

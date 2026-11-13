@@ -11,128 +11,190 @@ use App\Http\Controllers\DossierController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\EtudeTerrainController;
 
+/*
+|--------------------------------------------------------------------------
+| FONCTION DE RECUPERATION DES DONNEES CLIENT
+|--------------------------------------------------------------------------
+| Centralise les données utilisées par le tableau de bord.
+*/
 
-// ==================================================
-// TABLEAU DE BORD CLIENT
-// ==================================================
+$afficherDashboardClient = function (Request $request) {
 
-Route::get('/client/dashboard', function (Request $request) {
-
+    // Récupérer le client connecté
     $client = $request->user('client');
 
+    // Sécurité : vérifier que le client existe
+    abort_unless($client, 403, 'Accès non autorisé.');
+
+    // Vérifier l'adresse e-mail
     if (!$client->hasVerifiedEmail()) {
         return redirect()->route('verification.notice');
     }
 
-    // Récupérer la dernière mesure du client
-    $mesure = $client->mesures()->latest()->first();
+    // Récupérer la dernière mesure
+    $mesure = $client->mesures()
+        ->latest()
+        ->first();
 
+    // Récupérer le journal des événements
+    $evenements = $client->evenements()
+        ->latest()
+        ->get();
+
+    // Afficher le tableau de bord
     return response()
-        ->view('components.client.dashboard', compact('client', 'mesure'))
-        ->header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+        ->view('components.client.dashboard', compact(
+            'client',
+            'mesure',
+            'evenements'
+        ))
+        ->header(
+            'Cache-Control',
+            'no-cache, no-store, must-revalidate, max-age=0'
+        )
         ->header('Pragma', 'no-cache')
         ->header('Expires', '0');
-
-})->middleware('auth:client')->name('client.dashboard');
-
-
-// ==================================================
-// SUIVI DU DOSSIER
-// ==================================================
-
-Route::get('/suivi', function (Request $request) {
-
-    $client = $request->user('client');
-
-    if (!$client->hasVerifiedEmail()) {
-        return redirect()->route('verification.notice');
-    }
-
-    $mesure = $client->mesures()->latest()->first();
-
-    return view('components.client.dashboard', compact('client', 'mesure'));
-
-})->middleware('auth:client')->name('suivi');
+};
 
 
-// ==================================================
-// NOUVELLE DEMANDE
-// ==================================================
+/*
+|--------------------------------------------------------------------------
+| TABLEAU DE BORD CLIENT
+|--------------------------------------------------------------------------
+*/
 
+Route::get('/client/dashboard', $afficherDashboardClient)
+    ->middleware('auth:client')
+    ->name('client.dashboard');
+
+
+/*
+|--------------------------------------------------------------------------
+| SUIVI DU DOSSIER
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/suivi', $afficherDashboardClient)
+    ->middleware('auth:client')
+    ->name('suivi');
+
+
+/*
+|--------------------------------------------------------------------------
+| NOUVELLE DEMANDE
+|--------------------------------------------------------------------------
+*/
+
+// Afficher le formulaire
 Route::get('/nouvelle-demande', [
     DossierController::class,
     'create',
-])->middleware('auth:client')->name('demande.create');
+])
+    ->middleware('auth:client')
+    ->name('demande.create');
 
+// Enregistrer une nouvelle demande
 Route::post('/nouvelle-demande', [
     DossierController::class,
     'store',
-])->middleware('auth:client')->name('demande.store');
+])
+    ->middleware('auth:client')
+    ->name('demande.store');
 
 
-// ==================================================
-// MES DEVIS ET DOSSIERS
-// ==================================================
+/*
+|--------------------------------------------------------------------------
+| MES DEVIS ET DOSSIERS
+|--------------------------------------------------------------------------
+*/
 
-Route::get('/devis', function (Request $request) {
-
-    $client = $request->user('client');
-
-    if (!$client->hasVerifiedEmail()) {
-        return redirect()->route('verification.notice');
-    }
-
-    $mesure = $client->mesures()->latest()->first();
-
-    return view('components.client.dashboard', compact('client', 'mesure'));
-
-})->middleware('auth:client')->name('devis');
+Route::get('/devis', $afficherDashboardClient)
+    ->middleware('auth:client')
+    ->name('devis');
 
 
-// ==================================================
-// ESPACE TECHNICIEN TERRAIN
-// ==================================================
+/*
+|--------------------------------------------------------------------------
+| ESPACE TECHNICIEN TERRAIN
+|--------------------------------------------------------------------------
+|
+| Conservation de ton fonctionnement actuel :
+| le client doit être connecté pour afficher son dashboard.
+|
+*/
 
 Route::get('/technicien', function (Request $request) {
 
     // Vérifier le client connecté
-    if (!Auth::guard('client')->check()) {
-        return redirect()->route('LoginClient');
-    }
+    $client = $request->user('client');
 
-    $client = Auth::guard('client')->user();
+    abort_unless($client, 403, 'Accès non autorisé.');
 
     // Vérifier l'employé connecté
     $employe = Auth::guard('employe')->user();
 
+    // Vérifier son rôle s'il est connecté
     if ($employe && $employe->role !== 'MAITRE_MESURE') {
         abort(403, 'Accès réservé au maître mesure.');
     }
 
-    $mesure = $client->mesures()->latest()->first();
+    // Réutiliser la récupération centralisée
+    return app()->call(function () use ($request) {
 
-    return view('components.client.dashboard', compact('client', 'mesure'));
+        return response()->view(
+            'components.client.dashboard',
+            [
+                'client' => $request->user('client'),
+                'mesure' => $request->user('client')
+                    ->mesures()
+                    ->latest()
+                    ->first(),
+                'evenements' => $request->user('client')
+                    ->evenements()
+                    ->latest()
+                    ->get(),
+            ]
+        )
+        ->header(
+            'Cache-Control',
+            'no-cache, no-store, must-revalidate, max-age=0'
+        )
+        ->header('Pragma', 'no-cache')
+        ->header('Expires', '0');
+
+    });
 
 })->middleware('auth:client')->name('technicien');
 
 
-// ==================================================
-// CONNEXION CLIENT
-// ==================================================
+/*
+|--------------------------------------------------------------------------
+| CONNEXION CLIENT
+|--------------------------------------------------------------------------
+*/
 
-Route::post('/client/login', [ClientAuthController::class, 'login'])
+Route::post('/client/login', [
+    ClientAuthController::class,
+    'login',
+])
+    ->middleware('guest:client')
     ->name('client.login.submit');
 
 
-// ==================================================
-// DECONNEXION CLIENT
-// ==================================================
+/*
+|--------------------------------------------------------------------------
+| DECONNEXION CLIENT
+|--------------------------------------------------------------------------
+*/
 
 Route::post('/logout', function (Request $request) {
 
     Auth::guard('client')->logout();
 
+    // Invalider la session
     $request->session()->invalidate();
+
+    // Régénérer le token CSRF
     $request->session()->regenerateToken();
 
     return redirect()->route('LoginClient');
@@ -140,96 +202,136 @@ Route::post('/logout', function (Request $request) {
 })->name('logout');
 
 
-// ==================================================
-// PAGE DE CONNEXION
-// ==================================================
+/*
+|--------------------------------------------------------------------------
+| PAGE DE CONNEXION CLIENT
+|--------------------------------------------------------------------------
+*/
 
-Route::view('/', 'LoginClient')->name('LoginClient');
+Route::view('/', 'LoginClient')
+    ->middleware('guest:client')
+    ->name('LoginClient');
 
 
-// ==================================================
-// VERIFICATION EMAIL
-// ==================================================
+/*
+|--------------------------------------------------------------------------
+| VERIFICATION DE L'ADRESSE E-MAIL
+|--------------------------------------------------------------------------
+*/
 
+// Page de vérification
 Route::get('/client/email/verify', function () {
+
     return view('auth.verify-email');
 
-})->middleware('auth:client')->name('verification.notice');
+})
+    ->middleware('auth:client')
+    ->name('verification.notice');
 
 
 // Lien signé reçu par e-mail
-
 Route::get('/client/email/verify/{id}/{hash}', function (
     EmailVerificationRequest $request
 ) {
 
-    if ($request->user('client')->hasVerifiedEmail()) {
+    $client = $request->user('client');
+
+    // Si déjà vérifié
+    if ($client->hasVerifiedEmail()) {
         return redirect()->route('client.dashboard');
     }
 
-    $request->user('client')->markEmailAsVerified();
+    // Marquer l'adresse comme vérifiée
+    $client->markEmailAsVerified();
 
-    return redirect()->route('client.dashboard')
+    return redirect()
+        ->route('client.dashboard')
         ->with('success', 'Votre adresse e-mail a été vérifiée.');
 
-})->middleware(['auth:client', 'signed', 'throttle:6,1'])
-  ->name('verification.verify');
+})
+    ->middleware([
+        'auth:client',
+        'signed',
+        'throttle:6,1',
+    ])
+    ->name('verification.verify');
 
 
 // Renvoyer l'e-mail de vérification
+Route::post('/client/email/verification-notification', function (
+    Request $request
+) {
 
-Route::post('/client/email/verification-notification', function (Request $request) {
+    $client = $request->user('client');
 
-    $user = $request->user('client');
-
-    if ($user->hasVerifiedEmail()) {
+    if ($client->hasVerifiedEmail()) {
         return redirect()->route('client.dashboard');
     }
 
-    $user->sendEmailVerificationNotification();
+    $client->sendEmailVerificationNotification();
 
     return back()->with('status', 'verification-link-sent');
 
-})->middleware(['auth:client', 'throttle:6,1'])
-  ->name('verification.send');
+})
+    ->middleware([
+        'auth:client',
+        'throttle:6,1',
+    ])
+    ->name('verification.send');
 
 
-// ==================================================
-// CONNEXION ADMIN
-// ==================================================
+/*
+|--------------------------------------------------------------------------
+| CONNEXION ADMINISTRATEUR
+|--------------------------------------------------------------------------
+*/
 
+// Page de connexion admin
 Route::view('/pageLoginAdmin', 'pageLoginAdmin')
     ->middleware('guest:employe')
     ->name('admin.login');
 
-
-// TRAITEMENT DE LA CONNEXION ADMIN
-
-Route::post('/admin/login', [AdminAuthController::class, 'login'])
+// Traitement de la connexion admin
+Route::post('/admin/login', [
+    AdminAuthController::class,
+    'login',
+])
     ->middleware('guest:employe')
     ->name('admin.login.submit');
 
 
-// ==================================================
-// TABLEAU DE BORD ADMIN
-// ==================================================
+/*
+|--------------------------------------------------------------------------
+| TABLEAU DE BORD ADMINISTRATEUR
+|--------------------------------------------------------------------------
+*/
 
-Route::get('/tableauxDeBordAdmin', [DossierController::class, 'index'])
+// Tableau de bord
+Route::get('/tableauxDeBordAdmin', [
+    DossierController::class,
+    'index',
+])
     ->middleware('auth:employe')
     ->name('admin.dashboard');
 
-
-// GESTION DES DOSSIERS
-
-Route::get('/admin/dossiers', [DossierController::class, 'index'])
+// Gestion des dossiers
+Route::get('/admin/dossiers', [
+    DossierController::class,
+    'index',
+])
     ->middleware('auth:employe')
     ->name('admin.dossiers.index');
 
 
-// ==================================================
-// ENREGISTREMENT DE L'ETUDE TERRAIN
-// ==================================================
+/*
+|--------------------------------------------------------------------------
+| ENREGISTREMENT DE L'ETUDE TERRAIN
+|--------------------------------------------------------------------------
+*/
 
-Route::post('/technicien/etude', [EtudeTerrainController::class, 'store'])
+Route::post('/technicien/etude', [
+    EtudeTerrainController::class,
+    'store',
+])
     ->middleware('auth:employe')
     ->name('etude.store');

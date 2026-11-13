@@ -13,6 +13,15 @@ use Illuminate\Validation\Rule;
 class DossierController extends Controller
 {
     /**
+ * Afficher le formulaire de nouvelle demande
+ */
+
+
+public function create()
+{
+    return view('components.client.DemandeRaccordement');
+}
+    /**
      * Enregistrer une demande de raccordement.
      */
     public function store(Request $request)

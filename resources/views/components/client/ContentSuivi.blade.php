@@ -1,5 +1,6 @@
 @props(['dossier',
         'mesure' => null,
+        'evenements' => collect(),
 ])
 
 @php
@@ -18,7 +19,34 @@
     ];
 
     $statutAffiche = $statuts[strtolower($statut)] ?? $statut;
+
+    //Suivi de dossier
+        // Étape 1 : dépôt du dossier
+    $dateDepot = $dossier->created_at
+        ? $dossier->created_at->format('d/m/Y')
+        : 'Non renseignée';
+
+    // Étape 2 : visite technique
+    $mesureEffectuee = $mesure !== null;
+
+    $dateMesure = $mesure?->date
+        ? $mesure->date->format('d/m/Y')
+        : null;
+
+    $longueurMesuree = $mesure?->longueur;
+
+    // Étape 3 : calcul du devis
+    $autorisationRequise = $mesure?->autorisation === 'Oui';
+
+    // Déterminer l'étape actuelle
+    if (!$mesureEffectuee) {
+        $etapeActuelle = 2;
+    } else {
+        $etapeActuelle = 3;
+    }
 @endphp
+
+
 <div class="dossier-page">
 {{-- En-tête du dossier --}}
 <div class="dossier-entete">
@@ -111,6 +139,7 @@
 
 @endif
 {{-- Suivi --}}
+
 <div class="cycle-dossier">
 
     <div class="cycle-header">
@@ -123,53 +152,123 @@
 
         <div class="cycle-indicateur">
             <span class="indicateur-point"></span>
-            Étape 3 sur 5 : Calcul du devis en cours d'ajustement
+
+            Étape {{ $etapeActuelle }} sur 5 :
+            @if($etapeActuelle === 2)
+                Visite technique en attente
+            @else
+                Calcul du devis en attente
+            @endif
         </div>
     </div>
 
     <div class="cycle-etapes">
 
-        {{--  1 --}}
+        {{-- ÉTAPE 1 --}}
         <div class="cycle-etape terminee">
+
             <div class="etape-icone">✓</div>
 
             <div class="etape-ligne">
                 <span>Étape 1</span>
-                <span class="etape-badge">Validé</span>
+                <span class="etape-badge">Déposé</span>
             </div>
 
             <h3>Dépôt & Conformité</h3>
-            <p>Dossier complété et pièces d'identité validées le 12/02.</p>
+
+            <p>
+                Dossier déposé le {{ $dateDepot }}.
+                Statut : {{ $dossier->statut ?? 'En attente' }}.
+            </p>
+
         </div>
 
-        {{--  2  --}}
-        <div class="cycle-etape terminee">
-            <div class="etape-icone">▤</div>
+
+        {{-- ÉTAPE 2 --}}
+        <div class="cycle-etape {{ $mesureEffectuee ? 'terminee' : 'actuelle' }}">
+
+            <div class="etape-icone">
+                {{ $mesureEffectuee ? '✓' : '▤' }}
+            </div>
 
             <div class="etape-ligne">
-                <span>Étape 2</span>
-                <span class="etape-badge">38.5 m mesurés</span>
+                <span>
+                    Étape 2
+                    @if(!$mesureEffectuee)
+                        · Actuelle
+                    @endif
+                </span>
+
+                <span class="etape-badge">
+                    @if($mesureEffectuee)
+                        {{ $longueurMesuree }} m mesurés
+                    @else
+                        En attente
+                    @endif
+                </span>
             </div>
 
             <h3>Visite Technique Terrain</h3>
-            <p>Réalisée le 24/02 par Tech. E. Girard. Distance réseau fixée.</p>
+
+            <p>
+                @if($mesureEffectuee)
+                    Réalisée le {{ $dateMesure }}.
+                    Distance réseau mesurée :
+                    {{ $longueurMesuree }} m.
+                @else
+                    La visite technique de votre terrain
+                    n'a pas encore été effectuée.
+                @endif
+            </p>
+
         </div>
 
-        {{-- 3 --}}
-        <div class="cycle-etape actuelle">
+
+        {{-- ÉTAPE 3 --}}
+        <div class="cycle-etape {{ $etapeActuelle === 3 ? 'actuelle' : 'avenir' }}">
+
             <div class="etape-icone">⊖</div>
 
             <div class="etape-ligne">
-                <span>Étape 3 · Actuelle</span>
-                <span class="etape-badge alerte">Attente pièce</span>
+                <span>
+                    Étape 3
+                    @if($etapeActuelle === 3)
+                        · Actuelle
+                    @endif
+                </span>
+
+                <span class="etape-badge {{ $autorisationRequise ? 'alerte' : '' }}">
+
+                    @if(!$mesureEffectuee)
+                        À venir
+                    @elseif($autorisationRequise)
+                        Attente pièce
+                    @else
+                        En attente de calcul
+                    @endif
+
+                </span>
             </div>
 
             <h3>Calcul du Devis (PTF)</h3>
-            <p>Blocage administratif : convention de servitude requise.</p>
+
+            <p>
+                @if(!$mesureEffectuee)
+                    Cette étape commencera après la visite technique.
+                @elseif($autorisationRequise)
+                    Une autorisation de passage sur terrain privé
+                    est requise.
+                @else
+                    Votre dossier est en attente de calcul du devis.
+                @endif
+            </p>
+
         </div>
 
-        {{--  4  --}}
+
+        {{-- ÉTAPE 4 --}}
         <div class="cycle-etape avenir">
+
             <div class="etape-icone">▤</div>
 
             <div class="etape-ligne">
@@ -178,11 +277,18 @@
             </div>
 
             <h3>Signature & Travaux</h3>
-            <p>Validation devis, planification tranchées et coffret CIBE.</p>
+
+            <p>
+                Validation du devis et planification des travaux
+                de raccordement.
+            </p>
+
         </div>
 
-        {{-- 5  --}}
+
+        {{-- ÉTAPE 5 --}}
         <div class="cycle-etape avenir">
+
             <div class="etape-icone">ϟ</div>
 
             <div class="etape-ligne">
@@ -191,7 +297,12 @@
             </div>
 
             <h3>Mise en Service</h3>
-            <p>Attestation Consuel requise avant pose du compteur Linky.</p>
+
+            <p>
+                Préparation de la mise en service et installation
+                du compteur électrique.
+            </p>
+
         </div>
 
     </div>
@@ -386,6 +497,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 {{-- JOURNALDESUIVI --}}
 
+
+{{-- JOURNAL DES EVENEMENTS --}}
 <div class="journal-evenements">
 
     {{-- En-tête --}}
@@ -401,87 +514,62 @@ document.addEventListener('DOMContentLoaded', function () {
     {{-- Timeline --}}
     <div class="journal-timeline">
 
-        {{-- Événement 1 --}}
-        <div class="journal-item">
-            <div class="journal-icon icon-alerte">
-                <span>▣</span>
-            </div>
+        @php
+            $icones = [
+                'alerte' => '▣',
+                'technique' => '▤',
+                'affectation' => '♙',
+                'validation' => '✓',
+            ];
+        @endphp
 
-            <div class="journal-contenu">
-                <div class="journal-titre-ligne">
-                    <h3>Demande de pièce complémentaire & Notification SMS</h3>
-                    <span class="journal-date">Hier, à 16:42</span>
+        @forelse($evenements as $evenement)
+
+            <div class="journal-item">
+
+                <div class="journal-icon icon-{{ $evenement->type }}">
+                    <span>{{ $icones[$evenement->type] ?? '•' }}</span>
                 </div>
 
-                <p>
-                    Avis d'arrêt temporaire d'instruction émis par
-                    Ing. M. Laurent. Notification SMS adressée au
-                    +33 6 ** ** 78 12.
-                </p>
-            </div>
-        </div>
+                <div class="journal-contenu">
 
-        {{-- Événement 2 --}}
-        <div class="journal-item">
-            <div class="journal-icon icon-technique">
-                <span>▤</span>
-            </div>
+                    <div class="journal-titre-ligne">
+                        <h3>{{ $evenement->titre }}</h3>
 
-            <div class="journal-contenu">
-                <div class="journal-titre-ligne">
-                    <h3>Visite technique terrain clôturée</h3>
-                    <span class="journal-date">24 Fév. 2025, à 11:15</span>
+                        <span class="journal-date">
+                            {{ $evenement->created_at
+                                ->locale('fr')
+                                ->translatedFormat('d M Y, à H:i') }}
+                        </span>
+                    </div>
+
+                    <p>{{ $evenement->description }}</p>
+
+                    @if($evenement->acteur)
+                        <p>Acteur : {{ $evenement->acteur }}</p>
+                    @endif
+
                 </div>
 
-                <p>
-                    Mesure laser définitive : 38.5 mètres depuis le
-                    poste HTA/BT « Les Marais ». Présence d'un muret
-                    mitoyen notée sur le PV technique n° VT-44-8902.
-                </p>
-            </div>
-        </div>
-
-        {{-- Événement 3 --}}
-        <div class="journal-item">
-            <div class="journal-icon icon-affectation">
-                <span>♙</span>
             </div>
 
-            <div class="journal-contenu">
-                <div class="journal-titre-ligne">
-                    <h3>Affectation à la cellule ingénierie territoriale</h3>
-                    <span class="journal-date">16 Fév. 2025, à 09:30</span>
+        @empty
+
+            <div class="journal-item">
+                <div class="journal-contenu">
+                    <h3>Aucun événement pour le moment</h3>
+                    <p>
+                        Les actions effectuées sur votre dossier
+                        apparaîtront ici automatiquement.
+                    </p>
                 </div>
-
-                <p>
-                    Dossier déclaré recevable administrativement.
-                    Référent technique désigné : M. Laurent
-                    (Pôle Raccordement Loire-Atlantique).
-                </p>
-            </div>
-        </div>
-
-        {{-- Événement 4 --}}
-        <div class="journal-item">
-            <div class="journal-icon icon-validation">
-                <span>✓</span>
             </div>
 
-            <div class="journal-contenu">
-                <div class="journal-titre-ligne">
-                    <h3>Enregistrement initial du dossier en ligne</h3>
-                    <span class="journal-date">12 Fév. 2025, à 14:08</span>
-                </div>
-
-                <p>
-                    Téléversement du permis de construire PC 044 109 24
-                    P0034 et plan de masse cadastral.
-                </p>
-            </div>
-        </div>
+        @endforelse
 
     </div>
 </div>
+
 
 {{-- Estimation MAT ET dEVIS --}}
 

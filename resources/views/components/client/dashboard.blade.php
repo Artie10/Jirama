@@ -27,6 +27,7 @@
    <x-client.ContentSuivi
     :dossier="$client"
     :mesure="$mesure"
+    :evenements="$evenements"
 />
 
     {{-- NOUVELLE DEMANDE --}}
