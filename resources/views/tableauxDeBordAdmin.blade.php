@@ -434,42 +434,77 @@
 
 
                                 {{-- FUTURE CARTE GOOGLE MAPS --}}
-                                <div class="vr-map">
 
-                                    <div class="vr-map-top">
-                                        <span>Repérage technique</span>
-                                        <span>En attente du maître mesure</span>
-                                    </div>
+@php
+    $coordonneesDisponibles = $selectedMesure
+        && $selectedMesure->latitude !== null
+        && $selectedMesure->longitude !== null;
+@endphp
 
+<div class="vr-map">
 
-                                    <div style="min-height: 86px; display:flex; align-items:center; justify-content:center; text-align:center;">
+    <div class="vr-map-top">
+        <span>Repérage technique</span>
 
-                                        <p>
-                                            <span class="material-symbols-outlined">
-                                                location_on
-                                            </span>
+        <span>
+            {{ $coordonneesDisponibles
+                ? 'Terrain localisé'
+                : 'En attente du maître mesure' }}
+        </span>
+    </div>
 
-                                            <br>
+    @if($coordonneesDisponibles)
 
-                                            Le plan d'implantation sera disponible après le relevé terrain.
-                                        </p>
+        {{-- Carte Google Maps --}}
+        <div style="width:100%; height:250px; overflow:hidden;">
 
-                                    </div>
+            <iframe
+                width="100%"
+                height="100%"
+                style="border:0;"
+                loading="lazy"
+                allowfullscreen
+                referrerpolicy="no-referrer-when-downgrade"
+                src="https://maps.google.com/maps?q={{ $selectedMesure->latitude }},{{ $selectedMesure->longitude }}&z=17&output=embed">
+            </iframe>
 
+        </div>
 
-                                    <div class="vr-map-legend">
+    @else
 
-                                        <span>
-                                            Localisation : non renseignée
-                                        </span>
+        {{-- Carte en attente --}}
+        <div style="min-height:180px; display:flex; align-items:center; justify-content:center; text-align:center;">
 
-                                        <strong>
-                                            En attente
-                                        </strong>
+            <p>
+                <span class="material-symbols-outlined">
+                    location_on
+                </span>
 
-                                    </div>
+                <br>
 
-                                </div>
+                Le plan d'implantation sera disponible après le relevé terrain.
+
+            </p>
+
+        </div>
+
+    @endif
+
+    <div class="vr-map-legend">
+
+        <span>
+            Localisation :
+            {{ $coordonneesDisponibles ? 'Renseignée' : 'Non renseignée' }}
+        </span>
+
+        <strong>
+            {{ $coordonneesDisponibles ? 'Disponible' : 'En attente' }}
+        </strong>
+
+    </div>
+
+</div>
+
 
 
                                 <div class="vr-location-footer">
@@ -604,33 +639,48 @@
 
 
                             {{-- ÉTUDE DE L'AUTORISATION --}}
-                            <article class="vr-panel vr-info-panel">
 
-                                <div class="vr-panel-heading">
+@php
+    $autorisation = strtolower(trim(
+        $selectedMesure?->autorisation ?? ''
+    ));
 
-                                    <strong>3. Étude de l'autorisation</strong>
+    if ($autorisation === 'utile') {
+        $etatAutorisation = 'Autorisation nécessaire';
+        $statutEtude = 'Terminée';
+    } elseif ($autorisation === 'inutile') {
+        $etatAutorisation = 'Autorisation non nécessaire';
+        $statutEtude = 'Terminée';
+    } else {
+        $etatAutorisation = 'En attente d’étude sur terrain';
+        $statutEtude = 'En attente';
+    }
+@endphp
 
-                                    <span class="vr-mini-label">
-                                        En attente
-                                    </span>
+<article class="vr-panel vr-info-panel">
 
-                                </div>
+    <div class="vr-panel-heading">
 
+        <strong>3. Étude de l'autorisation</strong>
 
-                                <ul class="vr-data-list">
+        <span class="vr-mini-label">
+            {{ $statutEtude }}
+        </span>
 
-                                    <li>
-                                        <span>État de l'étude sur terrain</span>
+    </div>
 
-                                        <b>En attente d'étude sur terrain</b>
-                                    </li>
+    <ul class="vr-data-list">
 
-                                </ul>
+        <li>
+            <span>État de l'étude sur terrain</span>
 
-                            </article>
+            <b>{{ $etatAutorisation }}</b>
+        </li>
 
+    </ul>
 
-                        </div>
+</article>
+
 
 
                     @else

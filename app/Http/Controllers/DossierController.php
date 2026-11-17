@@ -195,19 +195,19 @@ public function create()
                 return view('components.client.dashboard', compact('dossier', 'mesures'));
     }
 //MODIFIER DOCUMENT
+
+
 public function modifierDocument(Request $request)
 {
-    // 1. Récupérer le client connecté
     $client = Auth::guard('client')->user();
 
     abort_unless($client, 403);
 
-    // 2. Vérifier son adresse e-mail
     if (!$client->hasVerifiedEmail()) {
         return redirect()->route('verification.notice');
     }
 
-    // 3. Valider le document envoyé
+    // 1. Validation
     $validated = $request->validate([
         'type_document' => [
             'required',
@@ -218,7 +218,6 @@ public function modifierDocument(Request $request)
                 'justificatif_domicile',
             ]),
         ],
-
         'fichier' => [
             'required',
             'file',
@@ -227,7 +226,7 @@ public function modifierDocument(Request $request)
         ],
     ]);
 
-    // 4. Associer chaque type à sa colonne existante
+    // 2. Correspondance avec les colonnes de la BD
     $colonnes = [
         'autorisation_passage' => 'autorisation_img',
         'photos_terrain' => 'photos_terrain',
@@ -235,12 +234,28 @@ public function modifierDocument(Request $request)
         'justificatif_domicile' => 'residence_img',
     ];
 
-    $colonne = $colonnes[$validated['type_document']];
+    $type = $validated['type_document'];
+    $colonne = $colonnes[$type];
 
-    // 5. Conserver le chemin de l'ancien document
+    // 3. Documents qui ne peuvent être déposés qu'une fois
+    $depotUnique = [
+        'autorisation_passage',
+        'photos_terrain',
+    ];
+
+    if (
+        in_array($type, $depotUnique)
+        && !empty($client->{$colonne})
+    ) {
+        return back()->withErrors([
+            'fichier' => 'Ce document a déjà été déposé et ne peut pas être remplacé.',
+        ]);
+    }
+
+    // 4. Garder le chemin de l'ancien fichier
     $ancienFichier = $client->{$colonne};
 
-    // 6. Stocker le nouveau document
+    // 5. Enregistrer le nouveau fichier
     $chemin = $request->file('fichier')->store(
         'dossiers/' . $client->NumDossier,
         'public'
@@ -251,43 +266,51 @@ public function modifierDocument(Request $request)
             $client,
             $colonne,
             $chemin,
-            $validated
+            $type
         ) {
-            // Remplacer le document dans le dossier existant
             $client->{$colonne} = $chemin;
             $client->save();
 
-            // Ajouter une trace dans le journal
+            // Journal de traçabilité
             JournalEvenement::create([
                 'NumDossier' => $client->NumDossier,
                 'type' => 'validation',
-                'titre' => 'Modification d’un document du dossier',
-                'description' => 'Le client a déposé un nouveau document (' .
-                    $validated['type_document'] .
-                    '). Ce document est en attente de vérification.',
+                'titre' => 'Document déposé ou remplacé',
+                'description' =>
+                    'Le client a déposé ou remplacé le document : '
+                    . $type . '. En attente de vérification.',
                 'acteur' => $client->Nom,
             ]);
         });
     } catch (\Throwable $e) {
         Storage::disk('public')->delete($chemin);
-
         throw $e;
     }
 
-    // 7. Supprimer l'ancien fichier après la mise à jour réussie
-    if ($ancienFichier && $ancienFichier !== $chemin) {
+    // 6. Supprimer l'ancien fichier uniquement après validation
+    if (
+        !in_array($type, $depotUnique)
+        && !empty($ancienFichier)
+        && $ancienFichier !== $chemin
+    ) {
         Storage::disk('public')->delete($ancienFichier);
     }
 
     return redirect()
         ->route('devis')
-        ->with('success', 'Votre document a été remplacé avec succès.');
+        ->with('success', 'Votre document a été enregistré avec succès.');
 }
+
+
     //TRAITEMENT DOSSIER ADMIN
 
       public function index(Request $request)
     {
-        $query = dossier::query();
+       $query = dossier::with([
+    'mesures' => function ($query) {
+        $query->orderByDesc('created_at');
+    }
+]);
 
         // Recherche par référence, nom ou commune
         if ($request->filled('q')) {
@@ -311,7 +334,9 @@ public function modifierDocument(Request $request)
             ->withQueryString();
 
         $selectedDossier = $dossiers->first();
-
+        $selectedMesure = $selectedDossier
+    ? $selectedDossier->mesures->first()
+    : null;
         $waitingCount = dossier::count();
 
         $urgentCount = dossier::where('statut', 'urgent')->count();
@@ -324,6 +349,7 @@ public function modifierDocument(Request $request)
             'waitingCount' => $waitingCount,
             'urgentCount' => $urgentCount,
             'averageDelay' => 'Non calculé',
+            'selectedMesure' => $selectedMesure,
         ]);
     }
 }

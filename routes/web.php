@@ -344,3 +344,4 @@ Route::post('/client/dossier/modification', [
 ])
     ->middleware('auth:client')
     ->name('dossier.modification');
+
