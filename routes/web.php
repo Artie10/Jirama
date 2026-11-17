@@ -345,3 +345,10 @@ Route::post('/client/dossier/modification', [
     ->middleware('auth:client')
     ->name('dossier.modification');
 
+// INSTRUCTION D'UN DOSSIER
+Route::get(
+    '/admin/dossiers/{NumDossier}/instruction',
+    [DossierController::class, 'traiter']
+)
+    ->middleware('auth:employe')
+    ->name('admin.dossiers.instruction');

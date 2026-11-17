@@ -339,19 +339,27 @@
 
 
                             {{-- BOUTON COMMENCER L'INSTRUCTION --}}
-                            <button type="button" class="vr-button vr-button-blue">
+                          @if($selectedDossier)
 
-                                <span class="material-symbols-outlined">
-                                    engineering
-                                </span>
+    <a href="{{ route(
+        'admin.dossiers.instruction',
+        $selectedDossier->NumDossier
+    ) }}"
+       class="vr-button vr-button-blue">
 
-                                Commencer l'instruction
+        <span class="material-symbols-outlined">
+            engineering
+        </span>
 
-                                <span class="material-symbols-outlined">
-                                    arrow_forward
-                                </span>
+        Commencer l'instruction
 
-                            </button>
+        <span class="material-symbols-outlined">
+            arrow_forward
+        </span>
+
+    </a>
+
+@endif
 
                         </div>
 

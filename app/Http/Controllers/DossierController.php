@@ -194,6 +194,27 @@ public function create()
 
                 return view('components.client.dashboard', compact('dossier', 'mesures'));
     }
+
+    //TRAITEMENT DE DOSSIER ADMIN
+    public function traiter($NumDossier)
+{
+    // Récupérer le dossier demandé
+    $dossier = Dossier::with([
+        'mesures' => function ($query) {
+            $query->orderByDesc('created_at');
+        }
+    ])
+    ->where('NumDossier', $NumDossier)
+    ->firstOrFail();
+
+    // Récupérer sa dernière mesure
+    $mesure = $dossier->mesures->first();
+
+    return view('traitement-dossier', [
+        'dossier' => $dossier,
+        'mesure' => $mesure,
+    ]);
+}
 //MODIFIER DOCUMENT
 
 
