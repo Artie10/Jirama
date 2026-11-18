@@ -1,4 +1,3 @@
-
 @php
     // On conserve les vrais objets Eloquent provenant de la base.
     $selectedDossier = $selectedDossier ?? $dossiers->first();
@@ -7,9 +6,13 @@
 @once
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
 
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        rel="stylesheet">
 
     <link rel="stylesheet" href="{{ asset('css/tableauxDeBordAdmin.css') }}">
 @endonce
@@ -50,12 +53,7 @@
             <form method="POST" action="{{ url('/logout') }}">
                 @csrf
 
-                <button
-                    type="submit"
-                    class="vr-logout"
-                    aria-label="Se déconnecter"
-                    title="Se déconnecter"
-                >
+                <button type="submit" class="vr-logout" aria-label="Se déconnecter" title="Se déconnecter">
                     <span class="material-symbols-outlined">
                         power_settings_new
                     </span>
@@ -123,12 +121,8 @@
                         search
                     </span>
 
-                    <input
-                        type="search"
-                        name="q"
-                        value="{{ request('q') }}"
-                        placeholder="Rechercher un numéro, un client ou un e-mail..."
-                    >
+                    <input type="search" name="q" value="{{ request('q') }}"
+                        placeholder="Rechercher un numéro, un client ou un e-mail...">
 
                 </label>
 
@@ -180,11 +174,10 @@
                     <div class="vr-dossier-list">
 
                         @forelse ($dossiers as $dossier)
-
-                            <article class="vr-dossier-card {{ $selectedDossier && $selectedDossier->id === $dossier->id ? 'is-selected' : '' }}">
+                            <article
+                                class="vr-dossier-card {{ $selectedDossier && $selectedDossier->id === $dossier->id ? 'is-selected' : '' }}">
 
                                 @if ($selectedDossier && $selectedDossier->id === $dossier->id)
-
                                     <div class="vr-card-banner">
 
                                         <strong>
@@ -202,7 +195,6 @@
                                         </span>
 
                                     </div>
-
                                 @endif
 
 
@@ -213,11 +205,9 @@
                                         <div class="vr-card-person">
 
                                             @if (!$selectedDossier || $selectedDossier->id !== $dossier->id)
-
                                                 <div class="vr-card-reference">
                                                     {{ $dossier->NumDossier }}
                                                 </div>
-
                                             @endif
 
                                             <h3>{{ $dossier->Nom }}</h3>
@@ -296,7 +286,6 @@
                         @empty
 
                             <p>Aucun dossier trouvé.</p>
-
                         @endforelse
 
                     </div>
@@ -339,27 +328,22 @@
 
 
                             {{-- BOUTON COMMENCER L'INSTRUCTION --}}
-                          @if($selectedDossier)
+                            @if ($selectedDossier)
+                                <a href="{{ route('admin.dossiers.instruction', $selectedDossier->NumDossier) }}"
+                                    class="vr-button vr-button-blue">
 
-    <a href="{{ route(
-        'admin.dossiers.instruction',
-        $selectedDossier->NumDossier
-    ) }}"
-       class="vr-button vr-button-blue">
+                                    <span class="material-symbols-outlined">
+                                        engineering
+                                    </span>
 
-        <span class="material-symbols-outlined">
-            engineering
-        </span>
+                                    Commencer l'instruction
 
-        Commencer l'instruction
+                                    <span class="material-symbols-outlined">
+                                        arrow_forward
+                                    </span>
 
-        <span class="material-symbols-outlined">
-            arrow_forward
-        </span>
-
-    </a>
-
-@endif
+                                </a>
+                            @endif
 
                         </div>
 
@@ -443,75 +427,66 @@
 
                                 {{-- FUTURE CARTE GOOGLE MAPS --}}
 
-@php
-    $coordonneesDisponibles = $selectedMesure
-        && $selectedMesure->latitude !== null
-        && $selectedMesure->longitude !== null;
-@endphp
+                                @php
+                                    $coordonneesDisponibles =
+                                        $selectedMesure &&
+                                        $selectedMesure->latitude !== null &&
+                                        $selectedMesure->longitude !== null;
+                                @endphp
 
-<div class="vr-map">
+                                <div class="vr-map">
 
-    <div class="vr-map-top">
-        <span>Repérage technique</span>
+                                    <div class="vr-map-top">
+                                        <span>Repérage technique</span>
 
-        <span>
-            {{ $coordonneesDisponibles
-                ? 'Terrain localisé'
-                : 'En attente du maître mesure' }}
-        </span>
-    </div>
+                                        <span>
+                                            {{ $coordonneesDisponibles ? 'Terrain localisé' : 'En attente du maître mesure' }}
+                                        </span>
+                                    </div>
 
-    @if($coordonneesDisponibles)
+                                    @if ($coordonneesDisponibles)
+                                        {{-- Carte Google Maps --}}
+                                        <div style="width:100%; height:250px; overflow:hidden;">
 
-        {{-- Carte Google Maps --}}
-        <div style="width:100%; height:250px; overflow:hidden;">
+                                            <iframe width="100%" height="100%" style="border:0;" loading="lazy"
+                                                allowfullscreen referrerpolicy="no-referrer-when-downgrade"
+                                                src="https://maps.google.com/maps?q={{ $selectedMesure->latitude }},{{ $selectedMesure->longitude }}&z=17&output=embed">
+                                            </iframe>
 
-            <iframe
-                width="100%"
-                height="100%"
-                style="border:0;"
-                loading="lazy"
-                allowfullscreen
-                referrerpolicy="no-referrer-when-downgrade"
-                src="https://maps.google.com/maps?q={{ $selectedMesure->latitude }},{{ $selectedMesure->longitude }}&z=17&output=embed">
-            </iframe>
+                                        </div>
+                                    @else
+                                        {{-- Carte en attente --}}
+                                        <div
+                                            style="min-height:180px; display:flex; align-items:center; justify-content:center; text-align:center;">
 
-        </div>
+                                            <p>
+                                                <span class="material-symbols-outlined">
+                                                    location_on
+                                                </span>
 
-    @else
+                                                <br>
 
-        {{-- Carte en attente --}}
-        <div style="min-height:180px; display:flex; align-items:center; justify-content:center; text-align:center;">
+                                                Le plan d'implantation sera disponible après le relevé terrain.
 
-            <p>
-                <span class="material-symbols-outlined">
-                    location_on
-                </span>
+                                            </p>
 
-                <br>
+                                        </div>
+                                    @endif
 
-                Le plan d'implantation sera disponible après le relevé terrain.
+                                    <div class="vr-map-legend">
 
-            </p>
+                                        <span>
+                                            Localisation :
+                                            {{ $coordonneesDisponibles ? 'Renseignée' : 'Non renseignée' }}
+                                        </span>
 
-        </div>
+                                        <strong>
+                                            {{ $coordonneesDisponibles ? 'Disponible' : 'En attente' }}
+                                        </strong>
 
-    @endif
+                                    </div>
 
-    <div class="vr-map-legend">
-
-        <span>
-            Localisation :
-            {{ $coordonneesDisponibles ? 'Renseignée' : 'Non renseignée' }}
-        </span>
-
-        <strong>
-            {{ $coordonneesDisponibles ? 'Disponible' : 'En attente' }}
-        </strong>
-
-    </div>
-
-</div>
+                                </div>
 
 
 
@@ -551,19 +526,12 @@
                                         Demande de branchement
 
                                         @if ($selectedDossier->Dmd_img)
-
-                                            <a
-                                                href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($selectedDossier->Dmd_img) }}"
-                                                target="_blank"
-                                                rel="noopener"
-                                            >
+                                            <a href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($selectedDossier->Dmd_img) }}"
+                                                target="_blank" rel="noopener">
                                                 Consulter
                                             </a>
-
                                         @else
-
                                             <b>Non fournie</b>
-
                                         @endif
 
                                     </li>
@@ -573,19 +541,12 @@
                                         Justificatif de résidence
 
                                         @if ($selectedDossier->residence_img)
-
-                                            <a
-                                                href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($selectedDossier->residence_img) }}"
-                                                target="_blank"
-                                                rel="noopener"
-                                            >
+                                            <a href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($selectedDossier->residence_img) }}"
+                                                target="_blank" rel="noopener">
                                                 Consulter
                                             </a>
-
                                         @else
-
                                             <b>Non fourni</b>
-
                                         @endif
 
                                     </li>
@@ -595,19 +556,12 @@
                                         Autorisation
 
                                         @if ($selectedDossier->autorisation_img)
-
-                                            <a
-                                                href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($selectedDossier->autorisation_img) }}"
-                                                target="_blank"
-                                                rel="noopener"
-                                            >
+                                            <a href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($selectedDossier->autorisation_img) }}"
+                                                target="_blank" rel="noopener">
                                                 Consulter
                                             </a>
-
                                         @else
-
                                             <b>Non fournie</b>
-
                                         @endif
 
                                     </li>
@@ -648,52 +602,46 @@
 
                             {{-- ÉTUDE DE L'AUTORISATION --}}
 
-@php
-    $autorisation = strtolower(trim(
-        $selectedMesure?->autorisation ?? ''
-    ));
+                            @php
+                                $autorisation = strtolower(trim($selectedMesure?->autorisation ?? ''));
 
-    if ($autorisation === 'utile') {
-        $etatAutorisation = 'Autorisation nécessaire';
-        $statutEtude = 'Terminée';
-    } elseif ($autorisation === 'inutile') {
-        $etatAutorisation = 'Autorisation non nécessaire';
-        $statutEtude = 'Terminée';
-    } else {
-        $etatAutorisation = 'En attente d’étude sur terrain';
-        $statutEtude = 'En attente';
-    }
-@endphp
+                                if ($autorisation === 'utile') {
+                                    $etatAutorisation = 'Autorisation nécessaire';
+                                    $statutEtude = 'Terminée';
+                                } elseif ($autorisation === 'inutile') {
+                                    $etatAutorisation = 'Autorisation non nécessaire';
+                                    $statutEtude = 'Terminée';
+                                } else {
+                                    $etatAutorisation = 'En attente d’étude sur terrain';
+                                    $statutEtude = 'En attente';
+                                }
+                            @endphp
 
-<article class="vr-panel vr-info-panel">
+                            <article class="vr-panel vr-info-panel">
 
-    <div class="vr-panel-heading">
+                                <div class="vr-panel-heading">
 
-        <strong>3. Étude de l'autorisation</strong>
+                                    <strong>3. Étude de l'autorisation</strong>
 
-        <span class="vr-mini-label">
-            {{ $statutEtude }}
-        </span>
+                                    <span class="vr-mini-label">
+                                        {{ $statutEtude }}
+                                    </span>
 
-    </div>
+                                </div>
 
-    <ul class="vr-data-list">
+                                <ul class="vr-data-list">
 
-        <li>
-            <span>État de l'étude sur terrain</span>
+                                    <li>
+                                        <span>État de l'étude sur terrain</span>
 
-            <b>{{ $etatAutorisation }}</b>
-        </li>
+                                        <b>{{ $etatAutorisation }}</b>
+                                    </li>
 
-    </ul>
+                                </ul>
 
-</article>
-
-
-
-                    @else
-
-                        <p>Aucun dossier disponible pour le moment.</p>
+                            </article>
+                        @else
+                            <p>Aucun dossier disponible pour le moment.</p>
 
                     @endif
 
