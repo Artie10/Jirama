@@ -838,18 +838,26 @@ body {
 }
 
 /* ---------- 10. Colonne 2 : relevé maître mesure ---------- */
+/* ================================
+   METRIQUES DU RELEVE TERRAIN
+================================ */
+
 .vr-metrics {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 0.75rem;
+    width: 100%;
 }
+
 .vr-metric {
     display: flex;
     flex-direction: column;
     padding: 1rem;
     border-radius: var(--vr-r-lg);
     background: var(--vr-surface-low);
+    min-width: 0;
 }
+
 .vr-metric__label {
     font-size: 11px;
     font-weight: 600;
@@ -857,12 +865,15 @@ body {
     text-transform: uppercase;
     color: var(--vr-on-surface-variant);
 }
+
 .vr-metric__value {
     display: flex;
     align-items: baseline;
+    flex-wrap: wrap;
     gap: 0.25rem;
     margin-top: 0.25rem;
 }
+
 .vr-metric__num {
     font-family: var(--vr-font-head);
     font-size: 32px;
@@ -870,13 +881,16 @@ body {
     line-height: 40px;
     color: var(--vr-orange);
 }
+
 .vr-metric__num--blue {
     color: var(--vr-secondary);
 }
+
 .vr-metric__unit {
     font-weight: 700;
     color: var(--vr-primary);
 }
+
 .vr-metric__note {
     display: flex;
     align-items: center;
@@ -886,12 +900,20 @@ body {
     line-height: 16px;
     color: var(--vr-on-surface-variant);
 }
+
 .vr-metric__dot {
     width: 0.5rem;
     height: 0.5rem;
+    flex-shrink: 0;
     border-radius: 50%;
     background: var(--vr-orange);
 }
+
+/* ================================
+   ELEMENTS CABLE / PHASES
+   NON UTILISES POUR CE RELEVE
+================================ */
+
 .vr-cable {
     display: flex;
     flex-direction: column;
@@ -900,11 +922,14 @@ body {
     border-radius: var(--vr-r-lg);
     background: var(--vr-surface-low);
 }
+
 .vr-cable__head {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 0.5rem;
 }
+
 .vr-cable__label {
     font-size: 11px;
     font-weight: 700;
@@ -912,11 +937,13 @@ body {
     text-transform: uppercase;
     color: var(--vr-primary);
 }
+
 .vr-cable__value {
     font-size: 13px;
     font-weight: 700;
     color: var(--vr-secondary);
 }
+
 .vr-phase-bar {
     display: flex;
     width: 100%;
@@ -925,38 +952,52 @@ body {
     border-radius: 9999px;
     background: var(--vr-surface-highest);
 }
+
 .vr-phase {
     height: 100%;
 }
+
 .vr-phase--l1 {
     width: 45%;
     background: var(--vr-secondary-container);
 }
+
 .vr-phase--reserve {
     width: 25%;
     background: var(--vr-primary);
 }
+
 .vr-phase--security {
     width: 30%;
     background: var(--vr-orange);
 }
+
 .vr-cable__foot {
     display: flex;
     justify-content: space-between;
+    gap: 0.5rem;
     font-size: 12px;
     font-weight: 500;
     color: var(--vr-on-surface-variant);
 }
+
+/* ================================
+   PHOTOS
+================================ */
+
 .vr-photos {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
+
 .vr-photos__head {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 0.5rem;
 }
+
 .vr-photos__title {
     display: flex;
     align-items: center;
@@ -967,16 +1008,19 @@ body {
     text-transform: uppercase;
     color: var(--vr-primary);
 }
+
 .vr-photos__count {
     font-size: 12px;
     font-weight: 700;
     color: var(--vr-secondary);
 }
+
 .vr-photos__grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
 }
+
 .vr-photo {
     position: relative;
     aspect-ratio: 16 / 9;
@@ -984,17 +1028,20 @@ body {
     border-radius: var(--vr-r-lg);
     background: var(--vr-surface-high);
 }
+
 .vr-photo img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
+
 .vr-photo__shade {
     position: absolute;
     inset: 0;
     opacity: 0.9;
     background: linear-gradient(to top, rgba(0, 16, 38, 0.8), transparent 60%);
 }
+
 .vr-photo__cap {
     position: absolute;
     left: 0.5rem;
@@ -1009,61 +1056,201 @@ body {
     font-weight: 700;
     line-height: 14px;
 }
+
 .vr-photo__cap span:first-child {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+/* ================================
+   AUTORISATION DE PASSAGE
+================================ */
+
 .vr-servitude {
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
-    margin-top: auto;
+    margin-top: 1rem;
     padding: 1rem;
     border-radius: var(--vr-r-lg);
     background: var(--vr-surface-low);
+    min-width: 0;
 }
+
 .vr-servitude__icon {
     padding: 0.375rem;
+    flex-shrink: 0;
     border-radius: var(--vr-r);
     background: var(--vr-surface-lowest);
     color: var(--vr-secondary);
     box-shadow: var(--vr-shadow-sm);
     line-height: 0;
 }
+
 .vr-servitude__body {
     display: flex;
     flex-direction: column;
     flex: 1;
+    min-width: 0;
 }
+
 .vr-servitude__row {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
+
 .vr-servitude__title {
     font-size: 12px;
     font-weight: 700;
     line-height: 16px;
     color: var(--vr-primary);
 }
+
 .vr-servitude__text {
     margin-top: 0.25rem;
     font-size: 12px;
     line-height: 16px;
     color: var(--vr-on-surface-variant);
 }
+
 .vr-servitude__meta {
     display: flex;
-    align-items: center;
-    gap: 1rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
     margin-top: 0.5rem;
     font-size: 12px;
     font-weight: 500;
     color: var(--vr-on-surface-variant);
 }
 
+/* ================================
+   BOUTON CONSULTER AUTORISATION
+================================ */
+
+.vr-servitude .vr-doc__bottom {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+}
+
+.vr-servitude .vr-link-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--vr-r);
+    color: var(--vr-secondary);
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.vr-servitude .vr-link-btn:hover {
+    background: var(--vr-surface-high);
+    transform: translateY(-1px);
+}
+
+/* ================================
+   GOOGLE MAPS
+================================ */
+
+.vr-map {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    margin-top: 1rem;
+    overflow: hidden;
+    border-radius: var(--vr-r-lg);
+    background: var(--vr-surface-low);
+}
+
+.vr-map-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 1rem 1rem 0;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--vr-primary);
+}
+
+.vr-map iframe {
+    display: block;
+    width: 100%;
+    height: 250px;
+    border: 0;
+}
+
+.vr-map-legend {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0 1rem 1rem;
+    font-size: 12px;
+    color: var(--vr-on-surface-variant);
+}
+
+.vr-map-legend strong {
+    font-weight: 700;
+    color: var(--vr-secondary);
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 600px) {
+    .vr-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .vr-metric__num {
+        font-size: 28px;
+        line-height: 36px;
+    }
+
+    .vr-servitude {
+        padding: 0.75rem;
+    }
+
+    .vr-servitude__row {
+        align-items: flex-start;
+    }
+
+    .vr-servitude__meta {
+        flex-direction: column;
+        gap: 0.375rem;
+    }
+
+    .vr-map iframe {
+        height: 220px;
+    }
+
+    .vr-map-legend {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .vr-photos__grid {
+        grid-template-columns: 1fr;
+    }
+}
 /* ---------- 11. Colonne 3 : calculateur / devis ---------- */
 .vr-lines {
     display: flex;

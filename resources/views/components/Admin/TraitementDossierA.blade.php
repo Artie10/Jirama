@@ -282,207 +282,456 @@
                 <!-- COLONNE 1 : Dossier Client & Pièces Justificatives -->
                 <div class="vr-col">
                     <div class="vr-card">
+
                         <div class="vr-card__head">
                             <div class="vr-card__title">
                                 <span class="material-symbols-outlined">inventory_2</span>
                                 <h2>Dossier & Pièces Justificatives</h2>
                             </div>
-                            <span class="vr-chip">3/3 Validées</span>
+
+                            <span class="vr-chip">
+                                3 pièces déposées
+                            </span>
                         </div>
+
                         <p class="vr-card__intro">
-                            Contrôle de complétude juridique conforme à la norme administrative Enedis-NOI-RES_43E.
+                            Vérification des pièces justificatives requises
+                            pour la demande de branchement neuf en eau.
                         </p>
+
                         <div class="vr-docs">
-                            <!-- Document 1 : Permis -->
+
+                            {{-- DOCUMENT 1 : DEMANDE MANUSCRITE --}}
                             <div class="vr-doc">
+
                                 <div class="vr-doc__top">
                                     <div class="vr-doc__left">
+
                                         <span class="vr-doc__icon">
-                                            <span class="material-symbols-outlined">assignment</span>
+                                            <span class="material-symbols-outlined">
+                                                assignment
+                                            </span>
                                         </span>
+
                                         <div class="vr-doc__meta">
-                                            <span class="vr-doc__name">Permis de Construire (PC)</span>
-                                            <span class="vr-doc__sub">PC 044 035 24 K0192 • 142 m²</span>
-                                            <span class="vr-doc__date">Délivré le 12/01/2025 par Mairie</span>
+
+                                            <span class="vr-doc__name">
+                                                Demande de branchement signée
+                                            </span>
+
+                                            <span class="vr-doc__sub">
+                                                Demande manuscrite du client
+                                            </span>
+
+                                            <span class="vr-doc__date">
+                                                Déposé le
+                                                {{ $dossier->created_at ? $dossier->created_at->format('d/m/Y') : 'Date inconnue' }}
+                                            </span>
+
                                         </div>
                                     </div>
+
                                     <span class="vr-badge">
-                                        <span class="material-symbols-outlined">check_circle</span> Conforme
+                                        <span class="material-symbols-outlined">
+                                            description
+                                        </span>
+                                        Déposée
                                     </span>
                                 </div>
+
                                 <div class="vr-doc__bottom">
-                                    <span class="vr-doc__size">PDF • 4.2 Mo</span>
-                                    <button class="vr-link-btn">
-                                        <span class="material-symbols-outlined">visibility</span> Consulter l'acte
-                                    </button>
+
+                                    <span class="vr-doc__size">
+                                        Document du dossier
+                                    </span>
+
+                                    @if ($dossier->Dmd_img)
+                                        <a href="{{ Storage::url($dossier->Dmd_img) }}" target="_blank"
+                                            class="vr-link-btn">
+                                            <span class="material-symbols-outlined">
+                                                visibility
+                                            </span>
+                                            Consulter
+                                        </a>
+                                    @else
+                                        <span>Document indisponible</span>
+                                    @endif
+
                                 </div>
                             </div>
-                            <!-- Document 2 : Cadastre -->
+
+
+                            {{-- DOCUMENT 2 : JUSTIFICATIF DE DOMICILE --}}
                             <div class="vr-doc">
+
                                 <div class="vr-doc__top">
                                     <div class="vr-doc__left">
+
                                         <span class="vr-doc__icon">
-                                            <span class="material-symbols-outlined">map</span>
+                                            <span class="material-symbols-outlined">
+                                                home
+                                            </span>
                                         </span>
+
                                         <div class="vr-doc__meta">
-                                            <span class="vr-doc__name">Extrait Cadastral Officiel</span>
-                                            <span class="vr-doc__sub">Section B, Parcelles 114 & 115</span>
-                                            <span class="vr-doc__date">Échelle 1:500 • Géomètre Expert</span>
+
+                                            <span class="vr-doc__name">
+                                                Justificatif de domicile
+                                            </span>
+
+                                            <span class="vr-doc__sub">
+                                                Justification de la résidence du demandeur
+                                            </span>
+
+                                            <span class="vr-doc__date">
+                                                Déposé lors de la demande
+                                            </span>
+
                                         </div>
                                     </div>
+
                                     <span class="vr-badge">
-                                        <span class="material-symbols-outlined">check_circle</span> Certifié
+                                        <span class="material-symbols-outlined">
+                                            description
+                                        </span>
+                                        Déposé
                                     </span>
                                 </div>
+
                                 <div class="vr-doc__bottom">
-                                    <span class="vr-doc__size">DWG / PDF • 8.9 Mo</span>
-                                    <button class="vr-link-btn">
-                                        <span class="material-symbols-outlined">visibility</span> Voir le tracé
-                                    </button>
+
+                                    <span class="vr-doc__size">
+                                        Document du dossier
+                                    </span>
+
+                                    @if ($dossier->residence_img)
+                                        <a href="{{ Storage::url($dossier->residence_img) }}" target="_blank"
+                                            class="vr-link-btn">
+                                            <span class="material-symbols-outlined">
+                                                visibility
+                                            </span>
+                                            Consulter
+                                        </a>
+                                    @else
+                                        <span>Document indisponible</span>
+                                    @endif
+
                                 </div>
                             </div>
-                            <!-- Document 3 : CNI -->
+
+
+                            {{-- DOCUMENT 3 : CIN --}}
                             <div class="vr-doc">
+
                                 <div class="vr-doc__top">
                                     <div class="vr-doc__left">
+
                                         <span class="vr-doc__icon">
-                                            <span class="material-symbols-outlined">badge</span>
+                                            <span class="material-symbols-outlined">
+                                                badge
+                                            </span>
                                         </span>
+
                                         <div class="vr-doc__meta">
-                                            <span class="vr-doc__name">Identité du Pétitionnaire</span>
-                                            <span class="vr-doc__sub">CNI M. Marc DUPONT</span>
-                                            <span class="vr-doc__date">Validité : 11/2031 • FranceConnect+</span>
+
+                                            <span class="vr-doc__name">
+                                                Pièce d'identité (CIN)
+                                            </span>
+
+                                            <span class="vr-doc__sub">
+                                                Identité du demandeur :
+                                                {{ $dossier->Nom }}
+                                            </span>
+
+                                            <span class="vr-doc__date">
+                                                Copie de la pièce d'identité déposée
+                                            </span>
+
                                         </div>
                                     </div>
+
                                     <span class="vr-badge">
-                                        <span class="material-symbols-outlined">check_circle</span> Vérifié
+                                        <span class="material-symbols-outlined">
+                                            description
+                                        </span>
+                                        Déposée
                                     </span>
                                 </div>
+
                                 <div class="vr-doc__bottom">
-                                    <span class="vr-doc__size">PDF • 1.1 Mo</span>
-                                    <button class="vr-link-btn">
-                                        <span class="material-symbols-outlined">visibility</span> Contrôle régalien
-                                    </button>
+
+                                    <span class="vr-doc__size">
+                                        Document du dossier
+                                    </span>
+
+                                    @if ($dossier->cin_document)
+                                        <a href="{{ Storage::url($dossier->cin_document) }}" target="_blank"
+                                            class="vr-link-btn">
+                                            <span class="material-symbols-outlined">
+                                                visibility
+                                            </span>
+                                            Consulter
+                                        </a>
+                                    @else
+                                        <span>Document indisponible</span>
+                                    @endif
+
                                 </div>
                             </div>
+
                         </div>
-                        <!-- Demandeur Profile Card -->
+
+
+                        {{-- PROFIL DU DEMANDEUR --}}
                         <div class="vr-contact">
+
                             <div class="vr-contact__head">
-                                <span class="material-symbols-outlined">account_box</span>
-                                <span>Contact Client Privilégié</span>
+                                <span class="material-symbols-outlined">
+                                    account_box
+                                </span>
+
+                                <span>
+                                    Contact du demandeur
+                                </span>
                             </div>
+
                             <div class="vr-contact__grid">
+
                                 <span>Téléphone :</span>
-                                <span class="vr-contact__phone">06 42 19 88 00</span>
+
+                                <span class="vr-contact__phone">
+                                    {{ $dossier->telephone ?? 'Non renseigné' }}
+                                </span>
+
                                 <span>Courriel :</span>
-                                <span>m.dupont@ouest-mail.fr</span>
-                                <span>Statut d'occupation :</span>
-                                <span>Propriétaire Bâtisseur</span>
+
+                                <span>
+                                    {{ $dossier->Mail ?? 'Non renseigné' }}
+                                </span>
+
+                                <span>Statut du demandeur :</span>
+
+                                <span>
+                                    {{ $dossier->statut_demandeur ?? 'Non renseigné' }}
+                                </span>
+
                             </div>
+
                         </div>
+
                     </div>
                 </div>
 
                 <!-- COLONNE 2 : Relevé Maître Mesure -->
                 <div class="vr-col">
                     <div class="vr-card">
+
+                        {{-- EN-TÊTE --}}
                         <div class="vr-card__head">
+
                             <div class="vr-card__title">
-                                <span class="material-symbols-outlined">straighten</span>
+                                <span class="material-symbols-outlined">
+                                    straighten
+                                </span>
+
                                 <h2>Relevé Maître Mesure</h2>
                             </div>
-                            <span class="vr-chip vr-chip--ref">Réf: MM-7840</span>
-                        </div>
-                        <!-- Distance & Typologie -->
-                        <div class="vr-metrics">
-                            <div class="vr-metric">
-                                <span class="vr-metric__label">Distance Réseau-Coffret</span>
-                                <div class="vr-metric__value">
-                                    <span class="vr-metric__num">38.5</span>
-                                    <span class="vr-metric__unit">mètres</span>
-                                </div>
-                                <div class="vr-metric__note">
-                                    <span class="vr-metric__dot"></span>
-                                    <span>Dépassement seuil 30m</span>
-                                </div>
-                            </div>
-                            <div class="vr-metric">
-                                <span class="vr-metric__label">Configuration Technique</span>
-                                <div class="vr-metric__value">
-                                    <span class="vr-metric__num vr-metric__num--blue">Type 2</span>
-                                </div>
-                                <div class="vr-metric__note">Comptage en limite de propriété</div>
-                            </div>
-                        </div>
-                        <!-- Câblage & chute de tension -->
-                        <div class="vr-cable">
-                            <div class="vr-cable__head">
-                                <span class="vr-cable__label">Câblage Dérivé & Chute de Tension</span>
-                                <span class="vr-cable__value">ΔU = 1.28% ( &lt; 2%)</span>
-                            </div>
-                            <div class="vr-phase-bar">
-                                <div class="vr-phase vr-phase--l1" title="Phase L1 active"></div>
-                                <div class="vr-phase vr-phase--reserve" title="Réserve"></div>
-                                <div class="vr-phase vr-phase--security" title="Sécurité"></div>
-                            </div>
-                            <div class="vr-cable__foot">
-                                <span>Section : 2x35 mm² Alu</span>
-                                <span>Poste Source : HTA Beaujoire 04</span>
-                            </div>
-                        </div>
-                        <!-- Photos terrain -->
-                        <div class="vr-photos">
-                            <div class="vr-photos__head">
-                                <span class="vr-photos__title">
-                                    <span class="material-symbols-outlined">photo_camera</span> Relevés Photographiques
-                                    Géolocalisés
-                                </span>
-                                <span class="vr-photos__count">2 Clichés Certifiés</span>
-                            </div>
-                            <div class="vr-photos__grid">
-                                <div class="vr-photo">
-                                    <img data-alt="Photo technique d'un poteau béton HTA/BT avec lignes basse tension"
-                                        alt="Poteau P-09 HTA/BT"
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFFT0arrpQJA3SQndjPXj-9EJAARoz1UsuNCj0TknmmWNI0UicCqa97djk4C4V2RgXJwqptBpV12slu21UczhKmSM6QOvE2Pxqss547IAdcisiQW29ZE2VFyUJJ3NgOIoScyus5XLz46uT2gWUyeZLx3lxlbgcXQWRxFsW2qa1Q9N5P06PxNaxhSECgHZXu2S5FWM7xDPEBN-rmvx3CoLMacTu5gZV4DlUO82Rvs7IM5JUiVrjZs2Z" />
-                                    <div class="vr-photo__shade"></div>
-                                    <div class="vr-photo__cap">
-                                        <span>Poteau P-09 HTA/BT</span>
-                                        <span class="material-symbols-outlined">check_circle</span>
-                                    </div>
-                                </div>
-                                <div class="vr-photo">
-                                    <img data-alt="Gros plan d'un coffret de comptage en limite de propriété"
-                                        alt="Coffret Borne Limite"
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzrt4kgoTJ7cyG2z97wU6mNNgzumg4ZqUbeOXEmv3mEzGh84wdYHIfGr86-fQ3dQT7c5asB6ptk-c4P6M63kGIbqVsjomlvhpUGf_Ivm12GiJj08C3Dxa8RbNcHBT7Pgzc1wevGHZEOIK7JNwQsvn05HZ25tHqhKFITHOlm7-TxOwhhrNTwv-jdYIxkymswkerXYnXV84maxrhowcXlARnRpFNpTDTwtwjADK79_ElA0_nV8R7rFoP" />
-                                    <div class="vr-photo__shade"></div>
-                                    <div class="vr-photo__cap">
-                                        <span>Coffret Borne Limite</span>
-                                        <span class="material-symbols-outlined">check_circle</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Servitude de passage -->
-                        <div class="vr-servitude">
-                            <span class="vr-servitude__icon">
-                                <span class="material-symbols-outlined">handshake</span>
+
+                            <span class="vr-chip vr-chip--ref">
+                                Réf:
+                                {{ $mesure ? $mesure->NumMesure : 'En attente' }}
                             </span>
-                            <div class="vr-servitude__body">
-                                <div class="vr-servitude__row">
-                                    <span class="vr-servitude__title">Convention de Servitude</span>
-                                    <span class="vr-badge">Enregistrée</span>
-                                </div>
-                                <p class="vr-servitude__text">
-                                    Autorisation manuscrite parcelle riveraine <strong>B-114</strong> signée par les
-                                    consorts Voisin, certifiée conforme par Maître Tessier (Notaire).
-                                </p>
-                                <div class="vr-servitude__meta">
-                                    <span>Réf : SERV-2025-09</span>
-                                    <span>Portée : Tranchée 0.8m</span>
-                                </div>
-                            </div>
+
                         </div>
+
+
+                        {{-- DISTANCE --}}
+                        <div class="vr-metrics">
+
+                            <div class="vr-metric">
+
+                                <span class="vr-metric__label">
+                                    Distance Réseau-Terrain
+                                </span>
+
+                                <div class="vr-metric__value">
+
+                                    <span class="vr-metric__num">
+                                        {{ $mesure && $mesure->longueur !== null ? $mesure->longueur : '--' }}
+                                    </span>
+
+                                    <span class="vr-metric__unit">
+                                        mètres
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        {{-- AUTORISATION DE PASSAGE --}}
+                        <div class="vr-servitude">
+
+                            <span class="vr-servitude__icon">
+                                <span class="material-symbols-outlined">
+                                    handshake
+                                </span>
+                            </span>
+
+                            <div class="vr-servitude__body">
+
+                                <div class="vr-servitude__row">
+
+                                    <span class="vr-servitude__title">
+                                        Autorisation de passage
+                                    </span>
+
+                                    <span class="vr-badge">
+
+                                        {{ $mesure && $mesure->autorisation ? $mesure->autorisation : 'En attente' }}
+
+                                    </span>
+
+                                </div>
+
+
+                                {{-- DESCRIPTION --}}
+                                <p class="vr-servitude__text">
+
+                                    @if ($mesure && strtolower(trim($mesure->autorisation)) === 'utile')
+                                        Une autorisation de passage est nécessaire
+                                        pour la réalisation du branchement.
+                                    @elseif($mesure && strtolower(trim($mesure->autorisation)) === 'inutile')
+                                        Aucune autorisation de passage n'est nécessaire
+                                        selon le relevé terrain.
+                                    @else
+                                        La nécessité d'une autorisation de passage
+                                        n'a pas encore été renseignée.
+                                    @endif
+
+                                </p>
+
+
+                                {{-- MÉTADONNÉES --}}
+                                <div class="vr-servitude__meta">
+
+                                    <span>
+
+                                        @if ($dossier->autorisation_img)
+                                            Document déposé
+                                        @else
+                                            Aucun document déposé
+                                        @endif
+
+                                    </span>
+
+                                    @if ($mesure && $mesure->date)
+                                        <span>
+                                            Relevé :
+                                            {{ \Carbon\Carbon::parse($mesure->date)->format('d/m/Y') }}
+                                        </span>
+                                    @endif
+
+                                </div>
+
+
+                                {{-- BOUTON CONSULTER --}}
+                                @if ($dossier->autorisation_img)
+                                    <div class="vr-doc__bottom">
+
+                                        <a href="{{ \Illuminate\Support\Facades\Storage::url($dossier->autorisation_img) }}"
+                                            target="_blank" class="vr-link-btn">
+
+                                            <span class="material-symbols-outlined">
+                                                visibility
+                                            </span>
+
+                                            Consulter l'autorisation
+
+                                        </a>
+
+                                    </div>
+                                @endif
+
+                            </div>
+
+                        </div>
+
+
+                        {{-- LOCALISATION GOOGLE MAPS --}}
+                        <div class="vr-map">
+
+                            <div class="vr-map-top">
+
+                                <span>
+                                    Localisation du terrain
+                                </span>
+
+                                <span>
+
+                                    {{ $mesure && $mesure->latitude !== null && $mesure->longitude !== null ? 'Localisée' : 'En attente' }}
+
+                                </span>
+
+                            </div>
+
+
+                            {{-- SI LES COORDONNÉES EXISTENT --}}
+                            @if ($mesure && $mesure->latitude !== null && $mesure->longitude !== null)
+                                <div style="width:100%; height:250px; overflow:hidden;">
+
+                                    <iframe width="100%" height="100%" style="border:0;" loading="lazy"
+                                        allowfullscreen referrerpolicy="no-referrer-when-downgrade"
+                                        src="https://maps.google.com/maps?q={{ $mesure->latitude }},{{ $mesure->longitude }}&z=17&output=embed">
+                                    </iframe>
+
+                                </div>
+                            @else
+                                {{-- SI LES COORDONNÉES SONT ABSENTES --}}
+                                <div
+                                    style="min-height:180px; display:flex; align-items:center; justify-content:center; text-align:center;">
+
+                                    <p>
+
+                                        <span class="material-symbols-outlined">
+                                            location_on
+                                        </span>
+
+                                        <br>
+
+                                        La localisation sera disponible
+                                        après l'enregistrement des coordonnées terrain.
+
+                                    </p>
+
+                                </div>
+                            @endif
+
+
+                            {{-- LÉGENDE --}}
+                            <div class="vr-map-legend">
+
+                                <span>
+
+                                    Localisation :
+
+                                    {{ $mesure && $mesure->latitude !== null && $mesure->longitude !== null ? 'Renseignée' : 'Non renseignée' }}
+
+                                </span>
+
+                                <strong>
+
+                                    {{ $mesure && $mesure->latitude !== null && $mesure->longitude !== null ? 'Disponible' : 'En attente' }}
+
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
                     </div>
                 </div>
 
