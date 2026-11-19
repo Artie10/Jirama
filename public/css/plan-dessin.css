@@ -1,0 +1,328 @@
+/* ============================================================
+   Plan du parcours du tuyau — design
+   ============================================================ */
+
+.et-plan {
+    --pl-bleu: #2563eb;
+    --pl-bleu-fonce: #1d4ed8;
+    --pl-bleu-clair: #eff6ff;
+    --pl-orange: #ea580c;
+    --pl-rouge: #dc2626;
+    --pl-texte: #0f172a;
+    --pl-texte-doux: #64748b;
+    --pl-bordure: #e2e8f0;
+    --pl-fond: #f8fafc;
+}
+
+/* ---------- Bloc photo de fond ---------- */
+
+.et-plan-photo {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 16px 0 14px;
+    padding: 12px 14px;
+    border: 1px solid var(--pl-bordure);
+    border-radius: 12px;
+    background: var(--pl-fond);
+}
+
+.et-plan-photo-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--pl-bleu), var(--pl-bleu-fonce));
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.et-plan-photo-label .material-symbols-outlined {
+    font-size: 19px;
+}
+
+.et-plan-photo-label:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(37, 99, 235, 0.32);
+}
+
+.et-plan-photo-label:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
+.et-plan-photo-label input {
+    display: none;
+}
+
+.et-plan-photo-nom {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--pl-texte-doux);
+    font-size: 12px;
+    font-style: italic;
+    overflow-wrap: anywhere;
+}
+
+/* ---------- Barre d'outils ---------- */
+
+.et-plan-outils {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+    padding: 6px;
+    border: 1px solid var(--pl-bordure);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.et-plan-outil {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 13px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    color: #475569;
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.et-plan-outil .material-symbols-outlined {
+    font-size: 18px;
+}
+
+.et-plan-outil:hover {
+    background: var(--pl-fond);
+    color: var(--pl-texte);
+}
+
+.et-plan-outil.is-actif {
+    border-color: rgba(37, 99, 235, 0.35);
+    background: var(--pl-bleu-clair);
+    color: var(--pl-bleu-fonce);
+    box-shadow:
+        inset 0 0 0 1px rgba(37, 99, 235, 0.1),
+        0 2px 6px rgba(37, 99, 235, 0.12);
+}
+
+/* Couleur de l'icône selon l'outil, pour faire le lien avec la légende */
+.et-plan-outil[data-outil='crayon'] .material-symbols-outlined {
+    color: #0369a1;
+}
+.et-plan-outil[data-outil='passage'] .material-symbols-outlined {
+    color: var(--pl-orange);
+}
+.et-plan-outil[data-outil='depart'] .material-symbols-outlined {
+    color: var(--pl-bleu);
+}
+.et-plan-outil[data-outil='arrivee'] .material-symbols-outlined {
+    color: #16a34a;
+}
+
+.et-plan-espace {
+    flex: 1 1 auto;
+}
+
+.et-plan-outil[data-action='annuler'] {
+    border-color: var(--pl-bordure);
+    background: var(--pl-fond);
+}
+
+.et-plan-outil--danger {
+    color: var(--pl-rouge);
+}
+
+.et-plan-outil--danger:hover {
+    border-color: rgba(220, 38, 38, 0.25);
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.et-plan-outil:focus-visible,
+.et-plan-photo-label:focus-within {
+    outline: 3px solid rgba(37, 99, 235, 0.3);
+    outline-offset: 2px;
+}
+
+/* ---------- Zone de dessin ---------- */
+
+.et-plan-zone {
+    position: relative;
+    width: 100%;
+    height: 360px;
+    overflow: hidden;
+    border: 1px solid var(--pl-bordure);
+    border-radius: 16px;
+    background-color: #fff;
+    background-image:
+        linear-gradient(rgba(148, 163, 184, 0.18) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148, 163, 184, 0.18) 1px, transparent 1px);
+    background-size: 24px 24px;
+    box-shadow:
+        inset 0 2px 8px rgba(15, 23, 42, 0.05),
+        0 1px 3px rgba(15, 23, 42, 0.05);
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.et-plan-zone:hover {
+    border-color: #93c5fd;
+}
+
+.et-plan-zone:focus-within {
+    border-color: var(--pl-bleu);
+    box-shadow:
+        inset 0 2px 8px rgba(15, 23, 42, 0.05),
+        0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.et-plan-canvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: crosshair;
+}
+
+.et-plan-indication {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: max-content;
+    max-width: calc(100% - 28px);
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.82);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    color: #fff;
+    font-size: 11.5px;
+    font-weight: 500;
+    text-align: center;
+    pointer-events: none;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.25);
+}
+
+.et-plan-indication[hidden] {
+    display: none;
+}
+
+/* ---------- Légende ---------- */
+
+.et-plan-legende {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.et-plan-legende li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border: 1px solid var(--pl-bordure);
+    border-radius: 999px;
+    background: var(--pl-fond);
+    color: #475569;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.et-plan-pastille {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 22px;
+    height: 6px;
+    border-radius: 999px;
+}
+
+.et-plan-pastille--large {
+    width: 22px;
+    height: 12px;
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 600px) {
+    .et-plan-zone {
+        height: 290px;
+        border-radius: 14px;
+        background-size: 20px 20px;
+    }
+
+    .et-plan-photo {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .et-plan-photo-label {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .et-plan-outils {
+        gap: 4px;
+        padding: 5px;
+    }
+
+    .et-plan-outil {
+        padding: 8px 10px;
+        font-size: 11px;
+    }
+
+    .et-plan-outil .material-symbols-outlined {
+        font-size: 16px;
+    }
+
+    .et-plan-espace {
+        display: none;
+    }
+
+    .et-plan-indication {
+        bottom: 10px;
+        border-radius: 12px;
+        font-size: 10.5px;
+    }
+
+    .et-plan-legende li {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+}
