@@ -77,24 +77,50 @@
         function tracerTrait(trait, w, h) {
             if (!trait.p || !trait.p.length) return;
 
-            ctx.beginPath();
-            ctx.moveTo(trait.p[0][0] * w, trait.p[0][1] * h);
+            const points = trait.p;
 
-            trait.p.slice(1).forEach((point) => {
+            ctx.beginPath();
+            ctx.moveTo(points[0][0] * w, points[0][1] * h);
+
+            points.slice(1).forEach((point) => {
                 ctx.lineTo(point[0] * w, point[1] * h);
             });
 
-            if (trait.p.length === 1) {
-                ctx.lineTo(trait.p[0][0] * w + 0.1, trait.p[0][1] * h);
+            if (points.length === 1) {
+                ctx.lineTo(points[0][0] * w + 0.1, points[0][1] * h);
             }
-
-            ctx.strokeStyle = trait.passage ? 'rgba(234, 88, 12, 0.40)' : '#0369a1';
-
-            ctx.lineWidth = trait.passage ? Math.max(18, w / 25) : Math.max(3, w / 250);
 
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
-            ctx.stroke();
+
+            if (trait.passage) {
+                // Terrain de passage : large bande orange
+                ctx.strokeStyle = 'rgba(234, 88, 12, 0.35)';
+                ctx.lineWidth = Math.max(18, w / 22);
+                ctx.setLineDash([]);
+                ctx.stroke();
+
+                // Contour orange pour délimiter le passage
+                ctx.beginPath();
+                ctx.moveTo(points[0][0] * w, points[0][1] * h);
+
+                points.slice(1).forEach((point) => {
+                    ctx.lineTo(point[0] * w, point[1] * h);
+                });
+
+                ctx.strokeStyle = '#ea580c';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([6, 5]);
+                ctx.stroke();
+            } else {
+                // Conduite d'eau : ligne bleue technique
+                ctx.strokeStyle = '#0369a1';
+                ctx.lineWidth = Math.max(3, w / 250);
+                ctx.setLineDash([]);
+                ctx.stroke();
+            }
+
+            ctx.setLineDash([]);
         }
 
         function marqueur(position, couleur, texte, maison = false) {

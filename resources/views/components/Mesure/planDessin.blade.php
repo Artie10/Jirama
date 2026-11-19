@@ -1,8 +1,8 @@
 @props([
     'name' => 'plan_parcours',
     'valeur' => null,
-    'depart' => 'Poteau',
-    'arrivee' => 'Coffret',
+    'depart' => "Source d'eau",
+    'arrivee' => 'Maison',
     'passage' => 'Terrain de passage',
 ])
 
