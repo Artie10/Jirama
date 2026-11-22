@@ -4,16 +4,21 @@
         root.dataset.initialise = '1';
 
         const canvas = root.querySelector('.et-plan-canvas');
+        if (!canvas) return;
+
         const ctx = canvas.getContext('2d');
+
         const champJson = root.querySelector('[data-plan-json]');
         const champImage = root.querySelector('[data-plan-image]');
         const inputPhoto = root.querySelector('[data-photo]');
         const nomPhoto = root.querySelector('[data-photo-nom]');
         const indication = root.querySelector('[data-indication]');
 
+        const formulaire = root.closest('form');
+
         const labels = {
-            depart: canvas.dataset.labelDepart,
-            arrivee: canvas.dataset.labelArrivee,
+            depart: canvas.dataset.labelDepart || "Source d'eau",
+            arrivee: canvas.dataset.labelArrivee || 'Maison',
         };
 
         let photo = null;
@@ -27,6 +32,7 @@
             arrivee: null,
         };
 
+        // Restaurer les données JSON existantes
         try {
             const ancien = JSON.parse(champJson.value || 'null');
 
@@ -39,13 +45,19 @@
             console.warn('Plan précédent illisible', e);
         }
 
+        // Conserver un état pour la fonction Annuler
         function copierEtat() {
             historique.push(JSON.stringify(etat));
-            if (historique.length > 50) historique.shift();
+
+            if (historique.length > 50) {
+                historique.shift();
+            }
         }
 
+        // Adapter le canvas à sa taille réelle
         function ajusterCanvas() {
             const rect = canvas.getBoundingClientRect();
+
             if (!rect.width || !rect.height) return;
 
             const ratio = window.devicePixelRatio || 1;
@@ -54,17 +66,20 @@
             canvas.height = Math.round(rect.height * ratio);
 
             ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
             dessiner();
+            sauvegarder();
         }
 
+        // Dessiner la photo sans la déformer
         function dessinerPhoto() {
             const w = canvas.clientWidth;
             const h = canvas.clientHeight;
 
             if (!photo) return;
 
-            // Affichage de la photo entière sans la déformer.
             const ratio = Math.min(w / photo.width, h / photo.height);
+
             const largeur = photo.width * ratio;
             const hauteur = photo.height * ratio;
 
@@ -74,12 +89,14 @@
             ctx.drawImage(photo, x, y, largeur, hauteur);
         }
 
+        // Dessiner un trait
         function tracerTrait(trait, w, h) {
             if (!trait.p || !trait.p.length) return;
 
             const points = trait.p;
 
             ctx.beginPath();
+
             ctx.moveTo(points[0][0] * w, points[0][1] * h);
 
             points.slice(1).forEach((point) => {
@@ -94,14 +111,15 @@
             ctx.lineJoin = 'round';
 
             if (trait.passage) {
-                // Terrain de passage : large bande orange
+                // Bande orange : terrain de passage
                 ctx.strokeStyle = 'rgba(234, 88, 12, 0.35)';
                 ctx.lineWidth = Math.max(18, w / 22);
                 ctx.setLineDash([]);
                 ctx.stroke();
 
-                // Contour orange pour délimiter le passage
+                // Contour du passage
                 ctx.beginPath();
+
                 ctx.moveTo(points[0][0] * w, points[0][1] * h);
 
                 points.slice(1).forEach((point) => {
@@ -113,7 +131,7 @@
                 ctx.setLineDash([6, 5]);
                 ctx.stroke();
             } else {
-                // Conduite d'eau : ligne bleue technique
+                // Tuyau : ligne bleue
                 ctx.strokeStyle = '#0369a1';
                 ctx.lineWidth = Math.max(3, w / 250);
                 ctx.setLineDash([]);
@@ -123,13 +141,16 @@
             ctx.setLineDash([]);
         }
 
+        // Dessiner un marqueur
         function marqueur(position, couleur, texte, maison = false) {
             if (!position) return;
 
             const w = canvas.clientWidth;
             const h = canvas.clientHeight;
+
             const x = position[0] * w;
             const y = position[1] * h;
+
             const r = Math.max(8, w / 90);
 
             ctx.beginPath();
@@ -149,6 +170,7 @@
 
             ctx.fillStyle = couleur;
             ctx.fill();
+
             ctx.lineWidth = 2;
             ctx.strokeStyle = '#fff';
             ctx.stroke();
@@ -156,26 +178,33 @@
             ctx.font = '600 13px Arial';
             ctx.textBaseline = 'middle';
             ctx.textAlign = 'left';
+
             ctx.lineWidth = 4;
             ctx.strokeStyle = '#fff';
+
             ctx.strokeText(texte, x + r + 6, y);
+
             ctx.fillStyle = couleur;
             ctx.fillText(texte, x + r + 6, y);
         }
 
+        // Redessiner l'ensemble du plan
         function dessiner() {
             const w = canvas.clientWidth;
             const h = canvas.clientHeight;
 
+            if (!w || !h) return;
+
             ctx.clearRect(0, 0, w, h);
 
-            // Fond quadrillé
+            // Fond blanc
             ctx.fillStyle = '#fff';
             ctx.fillRect(0, 0, w, h);
 
             if (photo) {
                 dessinerPhoto();
             } else {
+                // Grille
                 ctx.strokeStyle = '#e5e7eb';
                 ctx.lineWidth = 1;
 
@@ -194,40 +223,52 @@
                 }
             }
 
+            // Dessiner d'abord les terrains de passage
             etat.traits.filter((t) => t.passage).forEach((t) => tracerTrait(t, w, h));
 
+            // Dessiner ensuite les tuyaux
             etat.traits.filter((t) => !t.passage).forEach((t) => tracerTrait(t, w, h));
 
+            // Marqueur de départ
             marqueur(etat.depart, '#2563eb', labels.depart);
+
+            // Marqueur d'arrivée
             marqueur(etat.arrivee, '#16a34a', labels.arrivee, true);
         }
 
+        // Générer le JSON et l'image PNG
         function sauvegarder() {
             champJson.value = JSON.stringify(etat);
 
-            const exportCanvas = document.createElement('canvas');
             const largeur = 1200;
-            const hauteur = Math.round((largeur * canvas.clientHeight) / canvas.clientWidth);
+
+            const largeurVisible = canvas.clientWidth;
+            const hauteurVisible = canvas.clientHeight;
+
+            if (!largeurVisible || !hauteurVisible) return;
+
+            const hauteur = Math.round((largeur * hauteurVisible) / largeurVisible);
+
+            const exportCanvas = document.createElement('canvas');
 
             exportCanvas.width = largeur;
             exportCanvas.height = hauteur;
 
             const exportCtx = exportCanvas.getContext('2d');
-            exportCtx.scale(largeur / canvas.clientWidth, hauteur / canvas.clientHeight);
 
-            // Export de la photo et du dessin ensemble.
-            const ancienCtx = ctx;
-            const image = document.createElement('canvas');
-            image.width = canvas.width;
-            image.height = canvas.height;
+            // Fond blanc
+            exportCtx.fillStyle = '#fff';
+            exportCtx.fillRect(0, 0, largeur, hauteur);
 
-            image.getContext('2d').drawImage(canvas, 0, 0);
+            // Exporter directement le canvas visible.
+            // Cela inclut la photo, la grille et tous les tracés.
+            exportCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, largeur, hauteur);
 
-            exportCtx.drawImage(image, 0, 0, canvas.clientWidth, canvas.clientHeight);
-
+            // Image PNG finale envoyée au contrôleur Laravel
             champImage.value = exportCanvas.toDataURL('image/png');
         }
 
+        // Obtenir la position normalisée du pointeur
         function position(e) {
             const rect = canvas.getBoundingClientRect();
 
@@ -237,6 +278,7 @@
             ];
         }
 
+        // Changer d'outil
         function choisirOutil(nom) {
             outil = nom;
 
@@ -245,18 +287,25 @@
             });
         }
 
+        // Début du dessin
         canvas.addEventListener('pointerdown', function (e) {
             e.preventDefault();
+
             canvas.setPointerCapture(e.pointerId);
 
             const p = position(e);
 
+            // Positionner le départ ou l'arrivée
             if (outil === 'depart' || outil === 'arrivee') {
                 copierEtat();
+
                 etat[outil] = p;
+
                 choisirOutil('crayon');
+
                 dessiner();
                 sauvegarder();
+
                 return;
             }
 
@@ -268,21 +317,28 @@
             };
 
             etat.traits.push(traitCourant);
+
             dessiner();
         });
 
+        // Déplacement du pointeur
         canvas.addEventListener('pointermove', function (e) {
             if (!traitCourant) return;
 
             e.preventDefault();
+
             traitCourant.p.push(position(e));
+
             dessiner();
         });
 
+        // Fin du dessin
         function terminerDessin() {
             if (!traitCourant) return;
 
             traitCourant = null;
+
+            dessiner();
             sauvegarder();
         }
 
@@ -290,65 +346,118 @@
         canvas.addEventListener('pointercancel', terminerDessin);
         canvas.addEventListener('lostpointercapture', terminerDessin);
 
+        // Sélection des outils
         root.querySelectorAll('[data-outil]').forEach((btn) => {
-            btn.addEventListener('click', () => choisirOutil(btn.dataset.outil));
+            btn.addEventListener('click', function () {
+                choisirOutil(btn.dataset.outil);
+            });
         });
 
-        root.querySelector('[data-action="annuler"]').addEventListener('click', () => {
-            if (!historique.length) return;
+        // Annuler la dernière action
+        const boutonAnnuler = root.querySelector('[data-action="annuler"]');
 
-            etat = JSON.parse(historique.pop());
-            dessiner();
-            sauvegarder();
-        });
+        if (boutonAnnuler) {
+            boutonAnnuler.addEventListener('click', function () {
+                if (!historique.length) return;
 
-        root.querySelector('[data-action="effacer"]').addEventListener('click', () => {
-            if (!confirm('Effacer tout le plan ?')) return;
+                etat = JSON.parse(historique.pop());
 
-            copierEtat();
-            etat = { traits: [], depart: null, arrivee: null };
-            dessiner();
-            sauvegarder();
-        });
+                dessiner();
+                sauvegarder();
+            });
+        }
 
-        inputPhoto.addEventListener('change', function () {
-            const fichier = this.files[0];
-            if (!fichier) return;
+        // Effacer le dessin
+        const boutonEffacer = root.querySelector('[data-action="effacer"]');
 
-            if (!['image/jpeg', 'image/png', 'image/webp'].includes(fichier.type)) {
-                alert('Choisissez une image JPG, PNG ou WEBP.');
-                this.value = '';
-                return;
-            }
+        if (boutonEffacer) {
+            boutonEffacer.addEventListener('click', function () {
+                if (!confirm('Effacer tout le plan ?')) return;
 
-            const lecteur = new FileReader();
+                copierEtat();
 
-            lecteur.onload = function (event) {
-                const nouvellePhoto = new Image();
-
-                nouvellePhoto.onload = function () {
-                    copierEtat();
-                    photo = nouvellePhoto;
-                    nomPhoto.textContent = fichier.name;
-                    indication.hidden = true;
-                    ajusterCanvas();
-                    sauvegarder();
+                etat = {
+                    traits: [],
+                    depart: null,
+                    arrivee: null,
                 };
 
-                nouvellePhoto.src = event.target.result;
-            };
+                dessiner();
+                sauvegarder();
+            });
+        }
 
-            lecteur.readAsDataURL(fichier);
-        });
+        // Charger la photo du terrain
+        if (inputPhoto) {
+            inputPhoto.addEventListener('change', function () {
+                const fichier = this.files[0];
 
+                if (!fichier) return;
+
+                if (!['image/jpeg', 'image/png', 'image/webp'].includes(fichier.type)) {
+                    alert('Choisissez une image JPG, PNG ou WEBP.');
+
+                    this.value = '';
+                    return;
+                }
+
+                if (fichier.size > 5 * 1024 * 1024) {
+                    alert('La photo ne doit pas dépasser 5 Mo.');
+
+                    this.value = '';
+                    return;
+                }
+
+                const lecteur = new FileReader();
+
+                lecteur.onload = function (event) {
+                    const nouvellePhoto = new Image();
+
+                    nouvellePhoto.onload = function () {
+                        copierEtat();
+
+                        photo = nouvellePhoto;
+
+                        if (nomPhoto) {
+                            nomPhoto.textContent = fichier.name;
+                        }
+
+                        if (indication) {
+                            indication.hidden = true;
+                        }
+
+                        dessiner();
+                        sauvegarder();
+                    };
+
+                    nouvellePhoto.onerror = function () {
+                        alert('Impossible de charger cette photo.');
+                    };
+
+                    nouvellePhoto.src = event.target.result;
+                };
+
+                lecteur.readAsDataURL(fichier);
+            });
+        }
+
+        // Actualiser le PNG juste avant l'envoi du formulaire
+        if (formulaire) {
+            formulaire.addEventListener('submit', function () {
+                sauvegarder();
+            });
+        }
+
+        // Adapter le dessin lors du redimensionnement
         if (window.ResizeObserver) {
             new ResizeObserver(ajusterCanvas).observe(canvas);
         } else {
             window.addEventListener('resize', ajusterCanvas);
         }
 
+        // Initialisation
         if (champJson.value) {
-            sauvegarder();
+            dessiner();
         }
 
         ajusterCanvas();

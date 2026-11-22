@@ -238,7 +238,7 @@
                     @enderror
                 </section>
 
-                <x-mesure.planDessin :valeur="$planParcours ?? null" :depart="'Poteau'" :arrivee="'Coffret'" />
+                <x-mesure.planDessin :valeur="$planParcours ?? null" :depart="'Source d’eau'" :arrivee="'Maison'" :passage="'Terrain de passage'" />
                 <x-Mesure.localisation-picker :latitude="$latitude" :longitude="$longitude" :adresse="$adresse_localisation" />
             </div>
 
