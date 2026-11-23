@@ -91,8 +91,8 @@
 <div class="et">
 
 
-    <form class="et-formulaire" action="{{ $action }}" method="POST" data-simulation="0"
-        data-seuil="{{ $seuilLinky }}" novalidate>
+    <form class="et-formulaire" action="{{ $action }}" method="POST" enctype="multipart/form-data"
+        data-simulation="0" data-seuil="{{ $seuilLinky }}" novalidate>
 
         @csrf
         @if (session('success'))
@@ -260,19 +260,27 @@
                 <section class="et-validation">
                     <div class="et-validation-texte">
                         <p class="et-validation-titre">
-                            {{ $prerequisCompletes ? 'Tous les prérequis techniques sont complétés' : 'Des prérequis techniques restent à compléter' }}
+                            {{ $prerequisCompletes
+                                ? 'Tous les prérequis techniques sont complétés'
+                                : 'Des prérequis techniques restent à compléter' }}
                         </p>
-                        <p class="et-validation-sous">Horodatage d’achèvement estimé : {{ $horodatage }}</p>
+
+                        <p class="et-validation-sous">
+                            Horodatage d’achèvement estimé : {{ $horodatage }}
+                        </p>
                     </div>
 
                     <button class="et-bouton {{ $classeBouton }}" type="submit"
                         data-texte-defaut="Valider l’étude terrain et synchroniser le dossier"
                         data-icone-defaut="assignment_turned_in">
-                        <span class="material-symbols-outlined et-bouton-icone">{{ $iconeBouton }}</span>
-                        <span class="et-bouton-texte">{{ $texteBouton }}</span>
-                    </button>
-                    <span class="material-symbols-outlined et-bouton-icone">assignment_turned_in</span>
-                    <span class="et-bouton-texte">Valider l’étude terrain et synchroniser le dossier</span>
+
+                        <span class="material-symbols-outlined et-bouton-icone">
+                            {{ $iconeBouton }}
+                        </span>
+
+                        <span class="et-bouton-texte">
+                            {{ $texteBouton }}
+                        </span>
                     </button>
                 </section>
 

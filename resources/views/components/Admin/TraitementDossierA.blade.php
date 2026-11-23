@@ -32,6 +32,7 @@
         </div>
 
     </div>
+
     <div class="vr-sidebar__bottom">
         <div class="vr-user">
             <div class="vr-user__info">
@@ -569,7 +570,51 @@
                             </div>
 
                         </div>
+                        {{-- CHANGEMENTS DE DIRECTION --}}
+                        <div class="vr-metrics">
 
+                            <div class="vr-metric">
+                                <span class="vr-metric__label">
+                                    Nombre de changements de direction
+                                </span>
+
+                                <div class="vr-metric__value">
+                                    <span class="vr-metric__num">
+                                        {{ $mesure ? $mesure->nombre_changements_direction : '--' }}
+                                    </span>
+
+                                    <span class="vr-metric__unit">
+                                        changements
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        {{-- ZONE DE CHANGEMENT DE DIAMÈTRE --}}
+                        <div class="vr-servitude">
+
+                            <div class="vr-servitude__body">
+
+                                <div class="vr-servitude__row">
+                                    <span class="vr-servitude__title">
+                                        Zone de changement de diamètre
+                                    </span>
+
+                                    <span class="vr-badge">
+                                        {{ $mesure && $mesure->zone_changement_diametre ? 'Renseignée' : 'En attente' }}
+                                    </span>
+                                </div>
+
+                                <p class="vr-servitude__text">
+                                    {{ $mesure && $mesure->zone_changement_diametre
+                                        ? $mesure->zone_changement_diametre
+                                        : 'Aucune zone de changement de diamètre renseignée.' }}
+                                </p>
+
+                            </div>
+
+                        </div>
 
                         {{-- AUTORISATION DE PASSAGE --}}
                         <div class="vr-servitude">
@@ -730,7 +775,54 @@
                             </div>
 
                         </div>
+                        {{-- PLAN TECHNIQUE DU BRANCHEMENT --}}
+                        <div class="vr-servitude">
 
+                            <span class="vr-servitude__icon">
+                                <span class="material-symbols-outlined">
+                                    architecture
+                                </span>
+                            </span>
+
+                            <div class="vr-servitude__body">
+
+                                <div class="vr-servitude__row">
+                                    <span class="vr-servitude__title">
+                                        Plan technique du branchement
+                                    </span>
+
+                                    <span class="vr-badge">
+                                        {{ $mesure && $mesure->plan_image ? 'Disponible' : 'En attente' }}
+                                    </span>
+                                </div>
+
+                                <p class="vr-servitude__text">
+                                    @if ($mesure && $mesure->plan_image)
+                                        Le maître mesure a enregistré un plan technique
+                                        du parcours de branchement.
+                                    @else
+                                        Aucun plan technique n'a encore été enregistré.
+                                    @endif
+                                </p>
+
+                                @if ($mesure && $mesure->plan_image)
+                                    <div class="vr-doc__bottom">
+
+                                        <a href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($mesure->plan_image) }}"
+                                            target="_blank" rel="noopener noreferrer" class="vr-link-btn">
+                                            <span class="material-symbols-outlined">
+                                                visibility
+                                            </span>
+
+                                            Consulter le plan technique
+                                        </a>
+
+                                    </div>
+                                @endif
+
+                            </div>
+
+                        </div>
 
                     </div>
                 </div>

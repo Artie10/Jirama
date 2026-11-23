@@ -33,7 +33,7 @@ public function store(Request $request)
         'latitude' => ['nullable', 'numeric', 'between:-90,90'],
         'longitude' => ['nullable', 'numeric', 'between:-180,180'],
         'adresse_localisation' => ['nullable', 'string', 'max:10000'],
-        'plan_parcours_image' => ['nullable', 'string'],
+       'plan_parcours_image' => ['nullable', 'string', 'max:8000000'],
     ]);
 
     // 4. Vérifier les coordonnées
@@ -117,7 +117,7 @@ public function store(Request $request)
     if ($contenuImage !== null) {
 
         $nomFichier = 'plans/' . $mesure->NumMesure
-            . '_' . Str::random(8) . '.png';
+    . '_' . Str::random(8) . '.png';
 
         $enregistre = Storage::disk('public')->put(
             $nomFichier,
