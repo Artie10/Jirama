@@ -26,7 +26,7 @@ public function store(Request $request)
         'Accès réservé au maître mesure.'
     );
 
-    // 3. Valider les données reçues
+    // 3. Valider les données
     $donnees = $request->validate([
         'longueur' => ['required', 'numeric', 'gt:0', 'max:999999.99'],
         'autorisation' => ['required', 'in:Oui,Non'],
@@ -48,13 +48,52 @@ public function store(Request $request)
             ->withInput();
     }
 
-    // 5. Récupérer ou créer la mesure
+    // 5. Préparer et vérifier l'image PNG avant l'enregistrement
+    $contenuImage = null;
+
+    $imagePlan = $request->input('plan_parcours_image');
+
+    if (!empty($imagePlan)) {
+
+        if (!preg_match('/^data:image\/png;base64,([A-Za-z0-9+\/=]+)$/', $imagePlan, $matches)) {
+            return back()
+                ->withErrors([
+                    'plan_parcours_image' => 'Le format du plan est invalide.'
+                ])
+                ->withInput();
+        }
+
+        $contenuImage = base64_decode($matches[1], true);
+
+        $infosImage = $contenuImage !== false
+            ? @getimagesizefromstring($contenuImage)
+            : false;
+
+        if (
+            $contenuImage === false
+            || strlen($contenuImage) > 5 * 1024 * 1024
+            || $infosImage === false
+            || $infosImage['mime'] !== 'image/png'
+        ) {
+            return back()
+                ->withErrors([
+                    'plan_parcours_image' => 'Le plan est invalide ou dépasse 5 Mo.'
+                ])
+                ->withInput();
+        }
+    }
+
+    // 6. Récupérer ou créer la mesure du dossier
     $mesure = Mesure::firstOrNew([
         'NumDossier' => $client->NumDossier,
     ]);
 
-    // 6. Générer le numéro si nouvelle mesure
+    // Conserver le chemin de l'ancien plan
+    $ancienPlan = $mesure->plan_image;
+
+    // 7. Générer le numéro si nouvelle mesure
     if (!$mesure->exists) {
+
         do {
             $numMesure = 'MES-' . now()->format('Ymd') . '-'
                 . Str::upper(Str::random(6));
@@ -64,7 +103,7 @@ public function store(Request $request)
         $mesure->NumMesure = $numMesure;
     }
 
-    // 7. Enregistrer les informations de mesure
+    // 8. Enregistrer les informations de mesure
     $mesure->autorisation = $donnees['autorisation'];
     $mesure->date = now()->toDateString();
     $mesure->longueur = $donnees['longueur'];
@@ -72,40 +111,58 @@ public function store(Request $request)
     $mesure->longitude = $donnees['longitude'] ?? null;
     $mesure->adresse_localisation = $donnees['adresse_localisation'] ?? null;
 
-    $mesure->save();
+    // 9. Enregistrer le nouveau plan si une image a été transmise
+    $nouveauPlan = null;
 
-    // 8. Enregistrer le plan dessiné comme image PNG
-    $imagePlan = $request->input('plan_parcours_image');
+    if ($contenuImage !== null) {
 
-    if ($imagePlan) {
+        $nomFichier = 'plans/' . $mesure->NumMesure
+            . '_' . Str::random(8) . '.png';
 
-        if (!preg_match('/^data:image\/png;base64,([A-Za-z0-9+\/=]+)$/', $imagePlan, $matches)) {
-            return back()->withErrors([
-                'plan_parcours_image' => 'Le format du plan est invalide.'
-            ])->withInput();
+        $enregistre = Storage::disk('public')->put(
+            $nomFichier,
+            $contenuImage
+        );
+
+        if (!$enregistre) {
+            return back()
+                ->withErrors([
+                    'plan_parcours_image' => "Impossible d'enregistrer le plan sur le serveur."
+                ])
+                ->withInput();
         }
 
-        $contenuImage = base64_decode($matches[1], true);
-
-        if (
-            $contenuImage === false
-            || strlen($contenuImage) > 5 * 1024 * 1024
-            || @getimagesizefromstring($contenuImage) === false
-        ) {
-            return back()->withErrors([
-                'plan_parcours_image' => 'Le plan est invalide ou dépasse 5 Mo.'
-            ])->withInput();
-        }
-
-        $nomFichier = 'plans/' . $mesure->NumMesure . '_' . Str::random(8) . '.png';
-
-        Storage::disk('public')->put($nomFichier, $contenuImage);
+        $nouveauPlan = $nomFichier;
+        $mesure->plan_image = $nouveauPlan;
     }
 
-    // 9. Retourner sur l'étude terrain
+    // 10. Enregistrer la mesure en base de données
+    try {
+        $mesure->save();
+    } catch (\Throwable $e) {
+
+        // Supprimer le nouveau fichier si l'enregistrement BD échoue
+        if ($nouveauPlan) {
+            Storage::disk('public')->delete($nouveauPlan);
+        }
+
+        throw $e;
+    }
+
+    // 11. Supprimer l'ancien plan après remplacement réussi
+    if (
+        $nouveauPlan
+        && $ancienPlan
+        && $ancienPlan !== $nouveauPlan
+    ) {
+        Storage::disk('public')->delete($ancienPlan);
+    }
+
+    // 12. Retourner sur l'étude terrain
     return redirect()
         ->route('technicien')
-        ->with('success', 'Étude terrain enregistrée avec succès.');
+        ->with('success', 'Étude terrain et plan enregistrés avec succès.');
 }
+
 
 }

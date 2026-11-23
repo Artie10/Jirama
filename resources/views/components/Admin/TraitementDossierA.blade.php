@@ -736,85 +736,153 @@
                 </div>
 
                 <!-- COLONNE 3 : Calculateur & Devis -->
+
                 <div class="vr-col">
                     <div class="vr-card">
                         <div class="vr-card__head">
                             <div class="vr-card__title">
                                 <span class="material-symbols-outlined">calculate</span>
-                                <h2>Calculateur & Devis Réseau</h2>
+                                <h2>Calculateur & Devis Branchement Eau</h2>
                             </div>
-                            <span class="vr-chip vr-chip--blue">Barème TURPE 6</span>
+                            <span class="vr-chip vr-chip--blue">Barème JIRAMA</span>
                         </div>
+
                         <p class="vr-card__intro">
-                            Chiffrage automatisé conformément au catalogue des prestations Enedis en vigueur.
+                            Estimation automatisée des frais de main-d'œuvre liés à l'installation
+                            des équipements nécessaires au branchement d'eau.
                         </p>
+
                         <div class="vr-lines">
+
                             <div class="vr-line">
                                 <div class="vr-line__txt">
-                                    <span class="vr-line__title">Forfait branchement BT 12 kVA</span>
-                                    <span class="vr-line__sub">Liaison standard réseau jusqu'à 30m</span>
+                                    <span class="vr-line__title">Bouche à clé tête ronde</span>
+                                    <span class="vr-line__sub">Quantité : 1 unité par branchement</span>
                                 </div>
-                                <span class="vr-line__amount">950,00 €</span>
+                                <span class="vr-line__amount">10 000 Ar</span>
                             </div>
-                            <div class="vr-line vr-line--extra">
-                                <div class="vr-line__txt">
-                                    <div class="vr-line__title-row">
-                                        <span class="vr-line__title">Supplément distance (&gt;30m)</span>
-                                        <span class="vr-dist-chip">+8.5m</span>
-                                    </div>
-                                    <span class="vr-line__sub">42,00 € / mètre linéaire supplémentaire</span>
-                                </div>
-                                <span class="vr-line__amount">357,00 €</span>
-                            </div>
+
                             <div class="vr-line">
                                 <div class="vr-line__txt">
-                                    <span class="vr-line__title">Travaux d'extension voirie</span>
-                                    <span class="vr-line__sub">Fourreau TPC Ø90 + Traversée enrobé</span>
+                                    <span class="vr-line__title">Pose du compteur d'eau</span>
+                                    <span class="vr-line__sub">1 pose par compteur — compteur fourni par la
+                                        JIRAMA</span>
                                 </div>
-                                <span class="vr-line__amount">420,00 €</span>
+                                <span class="vr-line__amount">8 000 Ar</span>
                             </div>
+
                             <div class="vr-line">
                                 <div class="vr-line__txt">
-                                    <span class="vr-line__title">Pose compteur communicant Linky</span>
-                                    <span class="vr-line__sub">Module radio CPL G3 + AGCP différentiel</span>
+                                    <span class="vr-line__title">Niche compteur classique</span>
+                                    <span class="vr-line__sub">Placement : 1 unité par compteur</span>
                                 </div>
-                                <span class="vr-line__amount">65,00 €</span>
+                                <span class="vr-line__amount">15 000 Ar</span>
                             </div>
-                            <div class="vr-line vr-line--deduct">
+
+                            <div class="vr-line">
                                 <div class="vr-line__txt">
-                                    <span class="vr-line__title">Déduction réfection collectivités</span>
-                                    <span class="vr-line__sub">Quote-part aménagement voirie communale</span>
+                                    <span class="vr-line__title">Coude 1/4 Galva FF 26×34</span>
+                                    <span class="vr-line__sub">Placement selon le nombre de changements de
+                                        direction</span>
                                 </div>
-                                <span class="vr-line__amount">-150,00 €</span>
+                                <span class="vr-line__amount">5 000 Ar</span>
+                            </div>
+
+                            <div class="vr-line">
+                                <div class="vr-line__txt">
+                                    <span class="vr-line__title">Robinet d'arrêt DN 15</span>
+                                    <span class="vr-line__sub">Placement : 1 unité par compteur</span>
+                                </div>
+                                <span class="vr-line__amount">8 000 Ar</span>
+                            </div>
+
+                            <div class="vr-line">
+                                <div class="vr-line__txt">
+                                    <span class="vr-line__title">Mamelon fileté droit 1521 Galva</span>
+                                    <span class="vr-line__sub">Placement : 1 unité par branchement</span>
+                                </div>
+                                <span class="vr-line__amount">4 000 Ar</span>
+                            </div>
+
+                            <div class="vr-line">
+                                <div class="vr-line__txt">
+                                    <span class="vr-line__title">Colle PVC en tube 125 MG</span>
+                                    <span class="vr-line__sub">Fournie par la JIRAMA — sans frais de placement
+                                        facturés</span>
+                                </div>
+                                <span class="vr-line__amount">Fournie</span>
+                            </div>
+
+                            <div class="vr-line">
+                                <div class="vr-line__txt">
+                                    <span class="vr-line__title">Béton pour butée et calage</span>
+                                    <span class="vr-line__sub">Quantité forfaitaire : 0,02 m³ par branchement</span>
+                                </div>
+                                <span class="vr-line__amount">12 000 Ar</span>
+                            </div>
+
+                            <div class="vr-line">
+                                <div class="vr-line__txt">
+                                    <span class="vr-line__title">Bouche à clé</span>
+                                    <span class="vr-line__sub">Placement : 1 unité par robinet d'arrêt</span>
+                                </div>
+                                <span class="vr-line__amount">10 000 Ar</span>
+                            </div>
+
+                            <div class="vr-line">
+                                <div class="vr-line__txt">
+                                    <span class="vr-line__title">Tuyau PVC 16 bars DN 32</span>
+                                    <span class="vr-line__sub">Longueur mesurée + 10 % de marge</span>
+                                </div>
+                                <span class="vr-line__amount">3 000 Ar</span>
+                            </div>
+
+                            <div class="vr-line">
+                                <div class="vr-line__txt">
+                                    <span class="vr-line__title">Robinet PC 25</span>
+                                    <span class="vr-line__sub">Placement : 1 unité par compteur</span>
+                                </div>
+                                <span class="vr-line__amount">7 000 Ar</span>
+                            </div>
+
+                            <div class="vr-line">
+                                <div class="vr-line__txt">
+                                    <span class="vr-line__title">Collier GB/PVC 63</span>
+                                    <span class="vr-line__sub">Placement : 1 unité par compteur</span>
+                                </div>
+                                <span class="vr-line__amount">6 000 Ar</span>
+                            </div>
+
+                            <div class="vr-line">
+                                <div class="vr-line__txt">
+                                    <span class="vr-line__title">Tuyau Galva 26×34</span>
+                                    <span class="vr-line__sub">Placement : 1 unité par compteur</span>
+                                </div>
+                                <span class="vr-line__amount">8 000 Ar</span>
                             </div>
                         </div>
+
                         <div class="vr-subtotals">
                             <div class="vr-subtotals__row">
-                                <span>Total Forfaitaire Hors Taxes :</span>
-                                <span>1 642,00 € HT</span>
+                                <span>Total main-d'œuvre HT :</span>
+                                <span>Calculé automatiquement</span>
                             </div>
                             <div class="vr-subtotals__row">
-                                <span>TVA Applicable (20.00%) :</span>
-                                <span>328,40 €</span>
+                                <span>TVA applicable (20 %) :</span>
+                                <span>Calculée automatiquement</span>
                             </div>
                         </div>
+
                         <div class="vr-total">
-                            <div class="vr-total__bar"></div>
-                            <div class="vr-total__inner">
-                                <div class="vr-total__head">
-                                    <span class="vr-total__label">Montant Net à Payer Client</span>
-                                    <span class="vr-total__status">Validé Réseau</span>
-                                </div>
-                                <div class="vr-total__amount">
-                                    1 970,40 <span class="vr-total__cur">€ TTC</span>
-                                </div>
-                                <span class="vr-total__note">
-                                    Acompte requis à l'acceptation : 591,12 € (30%) • Validité devis : 3 mois
-                                </span>
+                            <span class="vr-total__label">Montant total estimatif à payer</span>
+                            <div class="vr-total__amount">
+                                À calculer <span class="vr-total__cur">Ar TTC</span>
                             </div>
+
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <!-- Checklist de validation réglementaire & actions -->

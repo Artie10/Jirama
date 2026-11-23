@@ -237,7 +237,9 @@
         }
 
         // Générer le JSON et l'image PNG
+
         function sauvegarder() {
+            // Sauvegarder les données du dessin
             champJson.value = JSON.stringify(etat);
 
             const largeur = 1200;
@@ -245,7 +247,10 @@
             const largeurVisible = canvas.clientWidth;
             const hauteurVisible = canvas.clientHeight;
 
-            if (!largeurVisible || !hauteurVisible) return;
+            if (!largeurVisible || !hauteurVisible) {
+                champImage.value = '';
+                return;
+            }
 
             const hauteur = Math.round((largeur * hauteurVisible) / largeurVisible);
 
@@ -256,16 +261,25 @@
 
             const exportCtx = exportCanvas.getContext('2d');
 
+            if (!exportCtx) {
+                champImage.value = '';
+                return;
+            }
+
             // Fond blanc
             exportCtx.fillStyle = '#fff';
             exportCtx.fillRect(0, 0, largeur, hauteur);
 
-            // Exporter directement le canvas visible.
-            // Cela inclut la photo, la grille et tous les tracés.
+            // Exporter le canvas visible
             exportCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, largeur, hauteur);
 
-            // Image PNG finale envoyée au contrôleur Laravel
-            champImage.value = exportCanvas.toDataURL('image/png');
+            // Générer l'image PNG
+            try {
+                champImage.value = exportCanvas.toDataURL('image/png');
+            } catch (error) {
+                console.error('Erreur lors de la génération du plan :', error);
+                champImage.value = '';
+            }
         }
 
         // Obtenir la position normalisée du pointeur
