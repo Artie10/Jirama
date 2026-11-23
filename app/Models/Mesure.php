@@ -19,6 +19,8 @@ class Mesure extends Model
         'longitude',
         'adresse_localisation',
         'plan_image',
+        'nombre_changements_direction',
+        'nombre_changements_diametre',
     ];
 
     protected $casts = [

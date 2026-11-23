@@ -58,7 +58,65 @@
     white-space: nowrap;
     border: 0;
 }
+/* ===== Champs numériques ===== */
+.et-champ-groupe {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0 20px;
+}
 
+@media (min-width: 640px) {
+    .et-champ-groupe {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.et-champ {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
+.et-champ label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.et-champ input[type='number'] {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #111827;
+    background: #fff;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.et-champ input[type='number']:hover {
+    border-color: #9ca3af;
+}
+
+.et-champ input[type='number']:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+/* Valeur hors limites (ex. 150 ou -1) */
+.et-champ input[type='number']:out-of-range {
+    border-color: #dc2626;
+}
+
+.et-erreur {
+    font-size: 0.8rem;
+    color: #dc2626;
+}
 /* ---------- Icônes ---------- */
 .et .material-symbols-outlined {
     font-family: 'Material Symbols Outlined';

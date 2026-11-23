@@ -86,6 +86,40 @@
     <input type="hidden" name="{{ $name }}" value="{{ is_string($valeur) ? $valeur : '' }}" data-plan-json>
 
     <input type="hidden" name="{{ $name }}_image" value="" data-plan-image>
+
+    <div class="et-champ-groupe">
+
+        {{-- Nombre de changements de direction --}}
+        <div class="et-champ">
+            <label for="nombre_changements_direction">
+                Nombre de changements de direction
+            </label>
+
+            <input type="number" id="nombre_changements_direction" name="nombre_changements_direction" min="0"
+                max="100" step="1" inputmode="numeric"
+                value="{{ old('nombre_changements_direction', $mesure->nombre_changements_direction ?? 0) }}" required>
+
+            @error('nombre_changements_direction')
+                <span class="et-erreur">{{ $message }}</span>
+            @enderror
+        </div>
+
+        {{-- Nombre de changements de diamètre --}}
+        <div class="et-champ">
+            <label for="nombre_changements_diametre">
+                Nombre de changements de diamètre
+            </label>
+
+            <input type="number" id="nombre_changements_diametre" name="nombre_changements_diametre" min="0"
+                max="100" step="1" inputmode="numeric"
+                value="{{ old('nombre_changements_diametre', $mesure->nombre_changements_diametre ?? 0) }}" required>
+
+            @error('nombre_changements_diametre')
+                <span class="et-erreur">{{ $message }}</span>
+            @enderror
+        </div>
+
+    </div>
 </section>
 
 @once

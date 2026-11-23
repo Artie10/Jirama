@@ -34,6 +34,14 @@ public function store(Request $request)
         'longitude' => ['nullable', 'numeric', 'between:-180,180'],
         'adresse_localisation' => ['nullable', 'string', 'max:10000'],
        'plan_parcours_image' => ['nullable', 'string', 'max:8000000'],
+       'nombre_changements_direction' => [
+    'required',
+    'integer',
+    'min:0',
+    'max:100',
+],
+
+'nombre_changements_diametre' => ['required', 'integer', 'min:0', 'max:100'],
     ]);
 
     // 4. Vérifier les coordonnées
@@ -110,13 +118,18 @@ public function store(Request $request)
     $mesure->latitude = $donnees['latitude'] ?? null;
     $mesure->longitude = $donnees['longitude'] ?? null;
     $mesure->adresse_localisation = $donnees['adresse_localisation'] ?? null;
+    // Enregistrer les informations techniques supplémentaires
+$mesure->nombre_changements_direction =
+    $donnees['nombre_changements_direction'];
 
+$mesure->nombre_changements_diametre =
+    $donnees['nombre_changements_diametre'];
     // 9. Enregistrer le nouveau plan si une image a été transmise
     $nouveauPlan = null;
 
     if ($contenuImage !== null) {
 
-        $nomFichier = 'plans/' . $mesure->NumMesure
+       $nomFichier = 'plans/' . $mesure->NumMesure
     . '_' . Str::random(8) . '.png';
 
         $enregistre = Storage::disk('public')->put(

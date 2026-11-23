@@ -525,6 +525,7 @@
 
                 <!-- COLONNE 2 : Relevé Maître Mesure -->
                 <div class="vr-col">
+
                     <div class="vr-card">
 
                         {{-- EN-TÊTE --}}
@@ -591,26 +592,26 @@
 
                         </div>
 
-                        {{-- ZONE DE CHANGEMENT DE DIAMÈTRE --}}
-                        <div class="vr-servitude">
+                        {{-- CHANGEMENTS DE DIAMÈTRE --}}
+                        <div class="vr-metrics">
 
-                            <div class="vr-servitude__body">
+                            <div class="vr-metric">
 
-                                <div class="vr-servitude__row">
-                                    <span class="vr-servitude__title">
-                                        Zone de changement de diamètre
+                                <span class="vr-metric__label">
+                                    Nombre de changements de diamètre
+                                </span>
+
+                                <div class="vr-metric__value">
+
+                                    <span class="vr-metric__num">
+                                        {{ $mesure ? $mesure->nombre_changements_diametre : '--' }}
                                     </span>
 
-                                    <span class="vr-badge">
-                                        {{ $mesure && $mesure->zone_changement_diametre ? 'Renseignée' : 'En attente' }}
+                                    <span class="vr-metric__unit">
+                                        changements
                                     </span>
+
                                 </div>
-
-                                <p class="vr-servitude__text">
-                                    {{ $mesure && $mesure->zone_changement_diametre
-                                        ? $mesure->zone_changement_diametre
-                                        : 'Aucune zone de changement de diamètre renseignée.' }}
-                                </p>
 
                             </div>
 
@@ -829,149 +830,262 @@
 
                 <!-- COLONNE 3 : Calculateur & Devis -->
 
+
+                @php
+                    $mesureDisponible = isset($mesure) && $mesure !== null;
+
+                    $longueur = $mesureDisponible ? (float) ($mesure->longueur ?? 0) : 0;
+                    $changementsDirection = $mesureDisponible ? (int) ($mesure->nombre_changements_direction ?? 0) : 0;
+                    $changementsDiametre = $mesureDisponible ? (int) ($mesure->nombre_changements_diametre ?? 0) : 0;
+
+                    $articles = [
+                        [
+                            'nom' => 'Bouche à clé tête ronde',
+                            'detail' => '1 unité par branchement',
+                            'quantite' => 1,
+                            'unite' => 'unité',
+                            'pu' => 144370,
+                        ],
+                        [
+                            'nom' => 'Compteur d’eau',
+                            'detail' => 'Fourni gratuitement par la JIRAMA',
+                            'quantite' => 1,
+                            'unite' => 'unité',
+                            'pu' => 0,
+                        ],
+                        [
+                            'nom' => 'Pose du compteur d’eau',
+                            'detail' => '1 pose par compteur',
+                            'quantite' => 1,
+                            'unite' => 'pose',
+                            'pu' => 6821,
+                        ],
+                        [
+                            'nom' => 'Niche compteur classique',
+                            'detail' => '1 unité par compteur',
+                            'quantite' => 1,
+                            'unite' => 'unité',
+                            'pu' => 13894,
+                        ],
+                        [
+                            'nom' => 'Coude 1/4 Galva FF 26×34',
+                            'detail' => 'Selon le nombre de changements de direction',
+                            'quantite' => $changementsDirection,
+                            'unite' => 'unité',
+                            'pu' => 996,
+                        ],
+                        [
+                            'nom' => 'Réduction Galva FF 26/15',
+                            'detail' => 'Selon le nombre de changements de diamètre',
+                            'quantite' => $changementsDiametre,
+                            'unite' => 'unité',
+                            'pu' => 996,
+                        ],
+                        [
+                            'nom' => 'Robinet d’arrêt DN 15',
+                            'detail' => '1 unité par compteur',
+                            'quantite' => 1,
+                            'unite' => 'unité',
+                            'pu' => 851,
+                        ],
+                        [
+                            'nom' => 'Mamelon fileté droit 1521 Galva',
+                            'detail' => '1 unité par branchement',
+                            'quantite' => 1,
+                            'unite' => 'unité',
+                            'pu' => 851,
+                        ],
+                        [
+                            'nom' => 'Colle PVC en tube 125 MG',
+                            'detail' => 'Fournie par la JIRAMA — aucun frais de pose facturé',
+                            'quantite' => 1,
+                            'unite' => 'tube',
+                            'pu' => 0,
+                        ],
+                        [
+                            'nom' => 'Béton pour butée et calage',
+                            'detail' => '0,02 m³ par branchement',
+                            'quantite' => 0.02,
+                            'unite' => 'm³',
+                            'pu' => 95223,
+                        ],
+                        [
+                            'nom' => 'Tuyau PVC 16 bars DN 32',
+                            'detail' => 'Longueur mesurée + 10 % de marge',
+                            'quantite' => round($longueur * 1.1, 2),
+                            'unite' => 'mètre',
+                            'pu' => 5278,
+                        ],
+                        [
+                            'nom' => 'Robinet PC 25',
+                            'detail' => '1 unité par compteur',
+                            'quantite' => 1,
+                            'unite' => 'unité',
+                            'pu' => 6005,
+                        ],
+                        [
+                            'nom' => 'Collier GB/PVC 63',
+                            'detail' => '1 unité par compteur',
+                            'quantite' => 1,
+                            'unite' => 'unité',
+                            'pu' => 5755,
+                        ],
+                        [
+                            'nom' => 'Tuyau Galva 26×34',
+                            'detail' => '1 unité par compteur',
+                            'quantite' => 1,
+                            'unite' => 'unité',
+                            'pu' => 2304,
+                        ],
+                    ];
+
+                    $totalHT = 0;
+
+                    foreach ($articles as &$article) {
+                        $article['total'] = $article['quantite'] * $article['pu'];
+                        $totalHT += $article['total'];
+                    }
+                    unset($article);
+
+                    $tva = $totalHT * 0.2;
+                    $totalTTC = $totalHT + $tva;
+                @endphp
+
                 <div class="vr-col">
                     <div class="vr-card">
+
+                        {{-- EN-TÊTE --}}
                         <div class="vr-card__head">
                             <div class="vr-card__title">
                                 <span class="material-symbols-outlined">calculate</span>
                                 <h2>Calculateur & Devis Branchement Eau</h2>
                             </div>
+
                             <span class="vr-chip vr-chip--blue">Barème JIRAMA</span>
                         </div>
 
                         <p class="vr-card__intro">
-                            Estimation automatisée des frais de main-d'œuvre liés à l'installation
-                            des équipements nécessaires au branchement d'eau.
+                            Estimation des frais de main-d’œuvre selon le barème JIRAMA.
+                            Les matériaux restent à la charge du client, sauf le compteur
+                            d’eau fourni par la JIRAMA.
                         </p>
 
-                        <div class="vr-lines">
+                        @if (!$mesureDisponible)
 
-                            <div class="vr-line">
-                                <div class="vr-line__txt">
-                                    <span class="vr-line__title">Bouche à clé tête ronde</span>
-                                    <span class="vr-line__sub">Quantité : 1 unité par branchement</span>
+                            <div class="vr-servitude">
+                                <div class="vr-servitude__body">
+                                    <div class="vr-servitude__row">
+                                        <span class="vr-servitude__title">
+                                            Calcul du devis
+                                        </span>
+                                        <span class="vr-badge">En attente</span>
+                                    </div>
+
+                                    <p class="vr-servitude__text">
+                                        Le devis sera disponible après l'enregistrement
+                                        du relevé du maître mesure.
+                                    </p>
                                 </div>
-                                <span class="vr-line__amount">10 000 Ar</span>
                             </div>
+                        @else
+                            {{-- INFORMATIONS DU RELEVÉ --}}
+                            <div class="vr-metrics">
 
-                            <div class="vr-line">
-                                <div class="vr-line__txt">
-                                    <span class="vr-line__title">Pose du compteur d'eau</span>
-                                    <span class="vr-line__sub">1 pose par compteur — compteur fourni par la
-                                        JIRAMA</span>
+                                <div class="vr-metric">
+                                    <span class="vr-metric__label">Longueur mesurée</span>
+                                    <div class="vr-metric__value">
+                                        <span class="vr-metric__num">
+                                            {{ number_format($longueur, 2, ',', ' ') }}
+                                        </span>
+                                        <span class="vr-metric__unit">mètres</span>
+                                    </div>
                                 </div>
-                                <span class="vr-line__amount">8 000 Ar</span>
-                            </div>
 
-                            <div class="vr-line">
-                                <div class="vr-line__txt">
-                                    <span class="vr-line__title">Niche compteur classique</span>
-                                    <span class="vr-line__sub">Placement : 1 unité par compteur</span>
+                                <div class="vr-metric">
+                                    <span class="vr-metric__label">PVC avec marge de 10 %</span>
+                                    <div class="vr-metric__value">
+                                        <span class="vr-metric__num">
+                                            {{ number_format($longueur * 1.1, 2, ',', ' ') }}
+                                        </span>
+                                        <span class="vr-metric__unit">mètres</span>
+                                    </div>
                                 </div>
-                                <span class="vr-line__amount">15 000 Ar</span>
+
                             </div>
 
-                            <div class="vr-line">
-                                <div class="vr-line__txt">
-                                    <span class="vr-line__title">Coude 1/4 Galva FF 26×34</span>
-                                    <span class="vr-line__sub">Placement selon le nombre de changements de
-                                        direction</span>
+                            {{-- DÉTAIL DES ARTICLES --}}
+                            <div class="vr-lines">
+
+                                @foreach ($articles as $article)
+                                    <div class="vr-line">
+
+                                        <div class="vr-line__txt">
+
+                                            <span class="vr-line__title">
+                                                {{ $article['nom'] }}
+                                            </span>
+
+                                            <span class="vr-line__sub">
+                                                {{ $article['detail'] }}
+                                            </span>
+
+                                            <span class="vr-line__sub">
+                                                Quantité :
+                                                {{ number_format($article['quantite'], 2, ',', ' ') }}
+                                                {{ $article['unite'] }}
+                                            </span>
+
+                                            <span class="vr-line__sub">
+                                                PU main-d’œuvre :
+                                                {{ number_format($article['pu'], 0, ',', ' ') }} Ar
+                                            </span>
+
+                                        </div>
+
+                                        <span class="vr-line__amount">
+                                            {{ number_format($article['total'], 0, ',', ' ') }} Ar
+                                        </span>
+
+                                    </div>
+                                @endforeach
+
+                            </div>
+
+                            {{-- RÉCAPITULATIF --}}
+                            <div class="vr-subtotals">
+
+                                <div class="vr-subtotals__row">
+                                    <span>Total main-d’œuvre HT :</span>
+                                    <strong>
+                                        {{ number_format($totalHT, 0, ',', ' ') }} Ar
+                                    </strong>
                                 </div>
-                                <span class="vr-line__amount">5 000 Ar</span>
-                            </div>
 
-                            <div class="vr-line">
-                                <div class="vr-line__txt">
-                                    <span class="vr-line__title">Robinet d'arrêt DN 15</span>
-                                    <span class="vr-line__sub">Placement : 1 unité par compteur</span>
+                                <div class="vr-subtotals__row">
+                                    <span>TVA applicable (20 %) :</span>
+                                    <strong>
+                                        {{ number_format($tva, 0, ',', ' ') }} Ar
+                                    </strong>
                                 </div>
-                                <span class="vr-line__amount">8 000 Ar</span>
+
                             </div>
 
-                            <div class="vr-line">
-                                <div class="vr-line__txt">
-                                    <span class="vr-line__title">Mamelon fileté droit 1521 Galva</span>
-                                    <span class="vr-line__sub">Placement : 1 unité par branchement</span>
+                            {{-- TOTAL TTC --}}
+                            <div class="vr-total">
+
+                                <span class="vr-total__label">
+                                    Montant total estimatif à payer
+                                </span>
+
+                                <div class="vr-total__amount">
+                                    {{ number_format($totalTTC, 0, ',', ' ') }}
+                                    <span class="vr-total__cur">Ar TTC</span>
                                 </div>
-                                <span class="vr-line__amount">4 000 Ar</span>
+
                             </div>
 
-                            <div class="vr-line">
-                                <div class="vr-line__txt">
-                                    <span class="vr-line__title">Colle PVC en tube 125 MG</span>
-                                    <span class="vr-line__sub">Fournie par la JIRAMA — sans frais de placement
-                                        facturés</span>
-                                </div>
-                                <span class="vr-line__amount">Fournie</span>
-                            </div>
+                        @endif
 
-                            <div class="vr-line">
-                                <div class="vr-line__txt">
-                                    <span class="vr-line__title">Béton pour butée et calage</span>
-                                    <span class="vr-line__sub">Quantité forfaitaire : 0,02 m³ par branchement</span>
-                                </div>
-                                <span class="vr-line__amount">12 000 Ar</span>
-                            </div>
-
-                            <div class="vr-line">
-                                <div class="vr-line__txt">
-                                    <span class="vr-line__title">Bouche à clé</span>
-                                    <span class="vr-line__sub">Placement : 1 unité par robinet d'arrêt</span>
-                                </div>
-                                <span class="vr-line__amount">10 000 Ar</span>
-                            </div>
-
-                            <div class="vr-line">
-                                <div class="vr-line__txt">
-                                    <span class="vr-line__title">Tuyau PVC 16 bars DN 32</span>
-                                    <span class="vr-line__sub">Longueur mesurée + 10 % de marge</span>
-                                </div>
-                                <span class="vr-line__amount">3 000 Ar</span>
-                            </div>
-
-                            <div class="vr-line">
-                                <div class="vr-line__txt">
-                                    <span class="vr-line__title">Robinet PC 25</span>
-                                    <span class="vr-line__sub">Placement : 1 unité par compteur</span>
-                                </div>
-                                <span class="vr-line__amount">7 000 Ar</span>
-                            </div>
-
-                            <div class="vr-line">
-                                <div class="vr-line__txt">
-                                    <span class="vr-line__title">Collier GB/PVC 63</span>
-                                    <span class="vr-line__sub">Placement : 1 unité par compteur</span>
-                                </div>
-                                <span class="vr-line__amount">6 000 Ar</span>
-                            </div>
-
-                            <div class="vr-line">
-                                <div class="vr-line__txt">
-                                    <span class="vr-line__title">Tuyau Galva 26×34</span>
-                                    <span class="vr-line__sub">Placement : 1 unité par compteur</span>
-                                </div>
-                                <span class="vr-line__amount">8 000 Ar</span>
-                            </div>
-                        </div>
-
-                        <div class="vr-subtotals">
-                            <div class="vr-subtotals__row">
-                                <span>Total main-d'œuvre HT :</span>
-                                <span>Calculé automatiquement</span>
-                            </div>
-                            <div class="vr-subtotals__row">
-                                <span>TVA applicable (20 %) :</span>
-                                <span>Calculée automatiquement</span>
-                            </div>
-                        </div>
-
-                        <div class="vr-total">
-                            <span class="vr-total__label">Montant total estimatif à payer</span>
-                            <div class="vr-total__amount">
-                                À calculer <span class="vr-total__cur">Ar TTC</span>
-                            </div>
-
-                        </div>
                     </div>
                 </div>
 
