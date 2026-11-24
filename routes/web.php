@@ -108,7 +108,7 @@ Route::post('/nouvelle-demande', [
 |--------------------------------------------------------------------------
 */
 
-Route::get('/devis', $afficherDashboardClient)
+Route::get('/client/DevisBranchement', $afficherDashboardClient)
     ->middleware('auth:client')
     ->name('devis');
 
