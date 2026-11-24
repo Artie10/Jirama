@@ -55,7 +55,33 @@ $afficherDashboardClient = function (Request $request) {
         ->header('Pragma', 'no-cache')
         ->header('Expires', '0');
 };
+$afficherDevisClient = function (Request $request) {
 
+    $client = $request->user('client');
+
+    abort_unless($client, 403, 'Accès non autorisé.');
+
+    if (!$client->hasVerifiedEmail()) {
+        return redirect()->route('verification.notice');
+    }
+
+    // Dernière mesure du client connecté
+    $mesure = $client->mesures()
+        ->latest()
+        ->first();
+
+    return response()
+        ->view('components.client.dashboard', compact(
+            'client',
+            'mesure'
+        ))
+        ->header(
+            'Cache-Control',
+            'no-cache, no-store, must-revalidate, max-age=0'
+        )
+        ->header('Pragma', 'no-cache')
+        ->header('Expires', '0');
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -108,7 +134,7 @@ Route::post('/nouvelle-demande', [
 |--------------------------------------------------------------------------
 */
 
-Route::get('/client/DevisBranchement', $afficherDashboardClient)
+Route::get('/client/DevisBranchement', $afficherDevisClient)
     ->middleware('auth:client')
     ->name('devis');
 

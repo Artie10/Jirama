@@ -1,6 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,55 +11,41 @@
     <link rel="stylesheet" href="{{ asset('css/NavClient.css') }}">
     <link rel="stylesheet" href="{{ asset('css/ContentSuivi.css') }}">
     <link rel="stylesheet" href="{{ asset('css/conteneurSuivi.css') }}">
-
+    <link rel="stylesheet" href="{{ asset('css/DevisBranchement.css') }}">
 
 </head>
+
 <body>
 
     {{-- Navbar principale --}}
     <x-client.BarNavC :dossier="$client" />
 
-<main>
+    <main>
 
-    {{-- SUIVI DU DOSSIER --}}
-    @if (request()->routeIs('suivi', 'client.dashboard'))
+        {{-- SUIVI DU DOSSIER --}}
+        @if (request()->routeIs('suivi', 'client.dashboard'))
 
-   <x-client.ContentSuivi
-    :dossier="$client"
-    :mesure="$mesure"
-    :evenements="$evenements"
-/>
+            <x-client.ContentSuivi :dossier="$client" :mesure="$mesure" :evenements="$evenements" />
 
-    {{-- NOUVELLE DEMANDE --}}
-    @elseif (request()->routeIs('demande.create'))
+            {{-- NOUVELLE DEMANDE --}}
+        @elseif (request()->routeIs('demande.create'))
+            <x-client.DemandeRaccordement />
 
-        <x-client.DemandeRaccordement />
+            {{-- TECHNICIEN TERRAIN --}}
+        @elseif (request()->routeIs('technicien'))
+            @if (Auth::guard('employe')->check() && Auth::guard('employe')->user()->role === 'MAITRE_MESURE')
+                <x-Mesure.EtudeTerrain />
+            @else
+                <x-Admin.LoginAdmin action="{{ route('admin.login.submit') }}" contexte="technicien" />
+            @endif
 
-    {{-- TECHNICIEN TERRAIN --}}
-    @elseif (request()->routeIs('technicien'))
-
-        @if (Auth::guard('employe')->check()
-            && Auth::guard('employe')->user()->role === 'MAITRE_MESURE')
-
-            <x-Mesure.EtudeTerrain />
-
-        @else
-
-            <x-Admin.LoginAdmin
-    action="{{ route('admin.login.submit') }}"
-    contexte="technicien"
-/>
+            {{-- DEVIS --}}
+        @elseif (request()->routeIs('devis'))
+            <x-client.DevisBranchement :client="$client" :mesure="$mesure" />
 
         @endif
 
-    {{-- DEVIS --}}
-    @elseif (request()->routeIs('devis'))
-
-        {{-- Contenu des devis à intégrer ultérieurement --}}
-
-    @endif
-
-</main>
+    </main>
 
 </body>
 
